@@ -2,6 +2,7 @@ import argparse
 import configparser
 import os
 import sys
+import urllib.parse
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -245,3 +246,28 @@ RedisConfig = get_config.get_redis_config()
 GenConfig = get_config.get_gen_config()
 # 上传配置
 UploadConfig = get_config.get_upload_config()
+
+# -----------------------------------------------------------------------------
+# 兼容性补充：构建 DATABASE_URL 变量
+# 供 config/database.py 中的 SQLAlchemy 异步引擎使用
+# -----------------------------------------------------------------------------
+_db_pass_encoded = urllib.parse.quote_plus(DataBaseConfig.db_password)
+
+if DataBaseConfig.db_type == 'postgresql':
+    # PostgreSQL 使用 asyncpg 驱动
+    DATABASE_URL = (
+        f"postgresql+asyncpg://{DataBaseConfig.db_username}:{_db_pass_encoded}"
+        f"@{DataBaseConfig.db_host}:{DataBaseConfig.db_port}/{DataBaseConfig.db_database}"
+    )
+elif DataBaseConfig.db_type == 'mysql':
+    # MySQL 使用 aiomysql 驱动 (需确保安装了 aiomysql)
+    DATABASE_URL = (
+        f"mysql+aiomysql://{DataBaseConfig.db_username}:{_db_pass_encoded}"
+        f"@{DataBaseConfig.db_host}:{DataBaseConfig.db_port}/{DataBaseConfig.db_database}"
+    )
+else:
+    # 默认回退
+    DATABASE_URL = (
+        f"{DataBaseConfig.db_type}://{DataBaseConfig.db_username}:{_db_pass_encoded}"
+        f"@{DataBaseConfig.db_host}:{DataBaseConfig.db_port}/{DataBaseConfig.db_database}"
+    )

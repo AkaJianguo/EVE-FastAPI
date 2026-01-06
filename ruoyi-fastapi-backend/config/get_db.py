@@ -1,28 +1,34 @@
-from collections.abc import AsyncGenerator
+from config.database import AsyncSessionLocal
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from config.database import AsyncSessionLocal, Base, async_engine
-from utils.log_util import logger
-
-
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_db():
     """
-    每一个请求处理完毕后会关闭当前连接，不同的请求使用不同的连接
-
-    :return:
+    [Public 模式依赖] 获取数据库会话
+    用途：常规业务读写
+    行为：自动提交事务
     """
-    async with AsyncSessionLocal() as current_db:
-        yield current_db
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
-
-async def init_create_table() -> None:
+async def get_sde_db():
     """
-    应用启动时初始化数据库连接
-
-    :return:
+    [Raw 模式依赖] 获取 SDE 数据库会话
+    用途：查询 EVE 静态数据
+    行为：只读模式（默认不提交）
     """
-    logger.info('🔎 初始化数据库连接...')
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info('✅️ 数据库连接成功')
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+            # 注意：此处故意不执行 session.commit()
+            # SDE 数据应视为只读资源，防止业务逻辑无意中修改静态数据。
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()

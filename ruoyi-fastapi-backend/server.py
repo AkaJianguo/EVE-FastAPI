@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 
 from common.router import auto_register_routers
 from config.env import AppConfig
-from config.get_db import init_create_table
+from config.database import init_create_table
 from config.get_redis import RedisUtil
 from config.get_scheduler import SchedulerUtil
 from exceptions.handle import handle_exception

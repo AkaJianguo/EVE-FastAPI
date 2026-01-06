@@ -3,6 +3,7 @@ import json
 from asyncio import iscoroutinefunction
 from datetime import datetime, timedelta
 from typing import Any, Callable, Optional, Union
+from urllib.parse import quote_plus
 
 from apscheduler.events import EVENT_ALL, SchedulerEvent
 from apscheduler.executors.asyncio import AsyncIOExecutor
@@ -19,7 +20,7 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import module_task  # noqa: F401
-from config.database import AsyncSessionLocal, quote_plus
+from config.database import AsyncSessionLocal
 from config.env import DataBaseConfig, RedisConfig
 from module_admin.dao.job_dao import JobDao
 from module_admin.entity.vo.job_vo import JobLogModel, JobModel
