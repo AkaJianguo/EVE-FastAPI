@@ -4,6 +4,7 @@ from typing import Annotated, Optional
 
 import jwt
 from fastapi import Depends, Request, Response
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from common.annotation.log_annotation import Log
@@ -13,6 +14,7 @@ from common.enums import BusinessType, RedisInitKeyConfig
 from common.router import APIRouterPro
 from common.vo import CrudResponseModel, DataResponseModel, DynamicResponseModel, ResponseBaseModel
 from config.env import AppConfig, JwtConfig
+from exceptions.exception import ServiceException
 from module_admin.entity.vo.login_vo import RouterModel, Token, UserLogin, UserRegister
 from module_admin.entity.vo.user_vo import CurrentUserModel, EditUserModel
 from module_admin.service.login_service import CustomOAuth2PasswordRequestForm, LoginService, oauth2_scheme
@@ -180,3 +182,73 @@ async def logout(request: Request, token: Annotated[Optional[str], Depends(oauth
     logger.info('退出成功')
 
     return ResponseUtil.success(msg='退出成功')
+
+
+@login_controller.get(
+    '/auth/EVElogin',
+    summary='EVE SSO 登录跳转',
+    description='重定向到 EVE Online 授权页面',
+)
+async def eve_sso_login(request: Request) -> RedirectResponse:
+    """
+    EVE SSO 登录入口：生成 state 并重定向到 CCP 授权页面
+    """
+    if not AppConfig.eve_client_id or not AppConfig.eve_callback_url:
+        logger.error('EVE SSO 配置缺失')
+        raise ServiceException(message='EVE SSO 配置缺失，请联系管理员')
+    
+    state = str(uuid.uuid4())
+    # 将 state 存入 Redis，过期时间 5 分钟，用于回调校验
+    await request.app.state.redis.set(
+        f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}',
+        state,
+        ex=timedelta(minutes=5),
+    )
+    
+    auth_url = (
+    f"https://login.eveonline.com/v2/oauth/authorize/"
+    f"?response_type=code"
+    f"&redirect_uri={AppConfig.eve_callback_url}"
+    f"&client_id={AppConfig.eve_client_id}"
+    f"&scope=publicData"
+    f"&state={state}"
+)
+    logger.info(f'EVE SSO 登录跳转: {auth_url}')
+    return RedirectResponse(url=auth_url)
+
+
+@login_controller.get(
+    '/auth/eve/callback',
+    summary='EVE SSO 回调处理',
+    description='处理 EVE Online 授权回调，生成系统 Token',
+)
+async def eve_sso_callback(
+    request: Request,
+    code: str,
+    state: str,
+    query_db: Annotated[AsyncSession, DBSessionDependency()],
+) -> RedirectResponse:
+    """
+    EVE SSO 回调：验证 state，换取 token，创建/更新用户，生成系统 JWT
+    """
+    # 校验 state
+    cached_state = await request.app.state.redis.get(f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}')
+    if not cached_state or cached_state != state:
+        logger.warning('EVE SSO state 校验失败')
+        return RedirectResponse(url=f"{AppConfig.app_root_path or ''}/index?error=invalid_state")
+    
+    # 删除已使用的 state
+    await request.app.state.redis.delete(f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}')
+    
+    try:
+        # 调用 service 处理 EVE SSO 逻辑
+        token = await LoginService.process_eve_sso(request, query_db, code)
+
+        # 重定向回前端首页，携带 Token（前端需拦截 URL 参数并存储）
+        frontend_url = f"http://localhost:80/index?token={token}"
+        logger.info('EVE SSO 登录成功，跳转前端')
+        return RedirectResponse(url=frontend_url)
+    except Exception as e:
+        logger.exception(f'EVE SSO 回调处理失败: {e}')
+        return RedirectResponse(url=f"http://localhost:80/index?error=sso_failed")
+

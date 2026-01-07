@@ -34,7 +34,7 @@
         </el-tooltip>
       </template>
 
-      <el-dropdown @command="handleCommand" class="avatar-container right-menu-item hover-effect" trigger="hover">
+      <el-dropdown v-if="userStore.token" @command="handleCommand" class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="userStore.avatar" class="user-avatar" />
           <span class="user-nickname"> {{ userStore.nickName }} </span>
@@ -53,6 +53,10 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+
+      <div v-else class="right-menu-item">
+        <el-button type="primary" size="small" @click="handleSSOLogin">Login with EVE</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +76,7 @@ import RuoYiDoc from '@/components/RuoYi/Doc'
 import useAppStore from '@/store/modules/app'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
+import { getToken } from '@/utils/auth'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -113,6 +118,11 @@ function setLayout() {
 
 function toggleTheme() {
   settingsStore.toggleTheme()
+}
+
+function handleSSOLogin() {
+  // 跳转到后端的登录引导接口
+  window.location.href = import.meta.env.VITE_APP_BASE_API + '/auth/EVElogin'
 }
 </script>
 
@@ -249,6 +259,16 @@ function toggleTheme() {
           top: 25px;
           font-size: 12px;
         }
+      }
+    }
+
+    .login-entry {
+      display: flex;
+      align-items: center;
+
+      .login-avatar {
+        width: 30px;
+        height: 30px;
       }
     }
   }

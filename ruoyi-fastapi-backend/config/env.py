@@ -24,6 +24,10 @@ class AppSettings(BaseSettings):
     app_reload: bool = True
     app_ip_location_query: bool = True
     app_same_time_login: bool = True
+    # EVE SSO 配置（建议通过环境变量或 .env 提供，不要将 secret 写入源码）
+    eve_client_id: str | None = None
+    eve_client_secret: str | None = None
+    eve_callback_url: str | None = None
 
 
 class JwtSettings(BaseSettings):
