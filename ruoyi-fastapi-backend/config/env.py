@@ -2,6 +2,7 @@ import argparse
 import configparser
 import os
 import sys
+import logging
 import urllib.parse
 from typing import Literal
 
@@ -57,6 +58,26 @@ class DataBaseSettings(BaseSettings):
     db_pool_size: int = 50
     db_pool_recycle: int = 3600
     db_pool_timeout: int = 30
+
+    @computed_field
+    @property
+    def database_url(self) -> str:
+        """
+        Generate database URL
+        :return:
+        """
+        password = urllib.parse.quote_plus(self.db_password)
+        if self.db_type == 'mysql':
+            url = f'mysql+aiomysql://{self.db_username}:{password}@{self.db_host}:{self.db_port}/{self.db_database}'
+        elif self.db_type == 'postgresql':
+            url = f'postgresql+asyncpg://{self.db_username}:{password}@{self.db_host}:{self.db_port}/{self.db_database}'
+        else:
+            raise ValueError('Unsupported database type')
+
+        sanitized_url = f'postgresql+asyncpg://{self.db_username}:***@{self.db_host}:{self.db_port}/{self.db_database}'
+        logging.info(f"数据库连接URL (脱敏): {sanitized_url}")
+
+        return url
 
     @computed_field
     @property
