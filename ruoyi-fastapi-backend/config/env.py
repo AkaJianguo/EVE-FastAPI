@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 import urllib.parse
+from dataclasses import dataclass
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -47,7 +48,7 @@ class DataBaseSettings(BaseSettings):
     数据库配置
     """
 
-    db_type: Literal['mysql', 'postgresql'] = 'mysql'
+    db_type: Literal['mysql', 'postgresql'] = 'postgresql'
     db_host: str = '127.0.0.1'
     db_port: int = 3306
     db_username: str = 'root'
@@ -97,6 +98,23 @@ class RedisSettings(BaseSettings):
     redis_username: str = ''
     redis_password: str = ''
     redis_database: int = 2
+
+
+@dataclass
+class SshSettings:
+    ssh_host: str = '43.163.228.205'
+    ssh_user: str = 'ubuntu'
+    ssh_key_path: str = '/Users/wangjianguo/.ssh/NEW_Key.pem'
+    remote_port: int = 5432
+
+    @classmethod
+    def from_env(cls) -> 'SshSettings':
+        return cls(
+            ssh_host=os.environ.get('SSH_HOST', cls.ssh_host),
+            ssh_user=os.environ.get('SSH_USER', cls.ssh_user),
+            ssh_key_path=os.path.expanduser(os.environ.get('SSH_KEY_PATH', cls.ssh_key_path)),
+            remote_port=int(os.environ.get('SSH_REMOTE_PORT', cls.remote_port)),
+        )
 
 
 class GenSettings:
@@ -178,6 +196,7 @@ class GetConfig:
     """
 
     def __init__(self) -> None:
+        self.env_file: str | None = None
         self.parse_cli_args()
 
     def get_app_config(self) -> AppSettings:
@@ -208,6 +227,12 @@ class GetConfig:
         # 实例化Redis配置模型
         return RedisSettings()
 
+    def get_ssh_config(self) -> "SshSettings":
+        """
+        获取SSH隧道配置
+        """
+        return SshSettings.from_env()
+
     def get_gen_config(self) -> GenSettings:
         """
         获取代码生成配置
@@ -222,8 +247,7 @@ class GetConfig:
         # 实例上传配置
         return UploadSettings()
 
-    @staticmethod
-    def parse_cli_args() -> None:
+    def parse_cli_args(self) -> None:
         """
         解析命令行参数
         """
@@ -249,12 +273,12 @@ class GetConfig:
         # 读取运行环境
         run_env = os.environ.get('APP_ENV', '')
         # 运行环境未指定时默认加载.env.dev
-        env_file = '.env.dev'
+        self.env_file = '.env.dev'
         # 运行环境不为空时按命令行参数加载对应.env文件
         if run_env != '':
-            env_file = f'.env.{run_env}'
+            self.env_file = f'.env.{run_env}'
         # 加载配置
-        load_dotenv(env_file)
+        load_dotenv(self.env_file)
 
 
 # 实例化获取配置类

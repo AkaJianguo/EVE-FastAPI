@@ -1,4 +1,5 @@
 import asyncpg.exceptions
+import sys
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
@@ -56,8 +57,14 @@ async def init_create_table():
     except asyncpg.exceptions.InvalidPasswordError as e:
         print('[错误] 数据库密码错误，请检查 .env 文件中的 DB_PASSWORD。')
         print(f'详细信息: {e}')
-    except ConnectionRefusedError:
-        print(f'[错误] 无法连接到数据库 {db_settings.db_host}:{db_settings.db_port}。')
-        print('[提示] 请检查 SSH 隧道是否已开启并正确绑定在 5433 端口。')
+        sys.exit(1)
+    except (ConnectionRefusedError, OSError):
+        print("\n" + "="*60)
+        print("❌ 检测到 SSH 隧道未开启或端口不匹配。")
+        print(f"   请确认 SSH 隧道已在运行，并将本地 5433 端口转发至数据库。")
+        print(f"   参考指令: ssh -L 5433:127.0.0.1:5432 [your-user]@[your-server-ip]")
+        print("="*60 + "\n")
+        sys.exit(1)
     except Exception as e:
         print(f'[错误] 数据库初始化失败: {e}')
+        sys.exit(1)

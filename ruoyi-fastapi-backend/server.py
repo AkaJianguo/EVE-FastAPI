@@ -10,6 +10,7 @@ from config.env import AppConfig
 from config.database import init_create_table
 from config.get_redis import RedisUtil
 from config.get_scheduler import SchedulerUtil
+from config.ssh_tunnel import ssh_tunnel_manager
 from exceptions.handle import handle_exception
 from middlewares.handle import handle_middleware
 from sub_applications.handle import handle_sub_applications
@@ -21,6 +22,8 @@ from utils.log_util import logger
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(f'⏰️ {AppConfig.app_name}开始启动')
+    if AppConfig.app_env == 'dev':
+        ssh_tunnel_manager.start_tunnel()
     worship()
     await init_create_table()
     app.state.redis = await RedisUtil.create_redis_pool()
@@ -31,6 +34,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     await RedisUtil.close_redis_pool(app)
     await SchedulerUtil.close_system_scheduler()
+    if AppConfig.app_env == 'dev':
+        ssh_tunnel_manager.stop_tunnel()
 
 
 def setup_docs_static_resources(
