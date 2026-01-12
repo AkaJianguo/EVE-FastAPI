@@ -19,17 +19,11 @@ const isWhiteList = (path) => {
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  
-  // 检查 URL 中是否带有 token
+
   const urlToken = to.query.token
   if (urlToken) {
-    // 存入 Cookie
     setToken(urlToken)
-    // 清理 URL 中的 token，并重定向
-    const { query, ...otherParams } = to
-    const newQuery = { ...query }
-    delete newQuery.token
-    next({ ...otherParams, query: newQuery, replace: true })
+    next({ path: to.path, query: {}, replace: true })
     return
   }
 

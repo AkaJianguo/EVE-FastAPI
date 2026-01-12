@@ -185,7 +185,7 @@ async def logout(request: Request, token: Annotated[Optional[str], Depends(oauth
 
 
 @login_controller.get(
-    '/auth/EVElogin',
+    '/auth/eve/login',
     summary='EVE SSO 登录跳转',
     description='重定向到 EVE Online 授权页面',
 )
@@ -217,6 +217,12 @@ async def eve_sso_login(request: Request) -> RedirectResponse:
     return RedirectResponse(url=auth_url)
 
 
+@login_controller.get('/auth/EVElogin', include_in_schema=False)
+async def eve_sso_login_alias(request: Request) -> RedirectResponse:
+    """兼容旧版路径的跳转处理"""
+    return await eve_sso_login(request)
+
+
 @login_controller.get(
     '/auth/eve/callback',
     summary='EVE SSO 回调处理',
@@ -235,20 +241,21 @@ async def eve_sso_callback(
     cached_state = await request.app.state.redis.get(f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}')
     if not cached_state or cached_state != state:
         logger.warning('EVE SSO state 校验失败')
-        return RedirectResponse(url=f"{AppConfig.app_root_path or ''}/index?error=invalid_state")
+        frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
+        return RedirectResponse(url=f"{frontend_base}/index?error=invalid_state")
     
     # 删除已使用的 state
     await request.app.state.redis.delete(f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}')
     
     try:
         # 调用 service 处理 EVE SSO 逻辑
-        token = await LoginService.process_eve_sso(request, query_db, code)
-
-        # 重定向回前端首页，携带 Token（前端需拦截 URL 参数并存储）
-        frontend_url = f"http://localhost:80/index?token={token}"
+        access_token = await LoginService.process_eve_sso(request, query_db, code)
+        frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
+        frontend_url = f"{frontend_base}/index?token={access_token}"
         logger.info('EVE SSO 登录成功，跳转前端')
         return RedirectResponse(url=frontend_url)
     except Exception as e:
         logger.exception(f'EVE SSO 回调处理失败: {e}')
-        return RedirectResponse(url=f"http://localhost:80/index?error=sso_failed")
+        frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
+        return RedirectResponse(url=f"{frontend_base}/index?error=sso_failed")
 

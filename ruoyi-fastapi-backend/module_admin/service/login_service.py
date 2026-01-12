@@ -531,6 +531,107 @@ class LoginService:
 
         return True
 
+    @classmethod
+    async def process_eve_sso(cls, request: Request, query_db: AsyncSession, code: str) -> str:
+        """
+        处理 EVE SSO 回调逻辑：换取 token，解析角色信息，创建或绑定用户，并生成系统 JWT
+
+        :param request: Request对象
+        :param query_db: orm对象
+        :param code: EVE SSO 授权码
+        :return: 系统 access_token
+        """
+        if not AppConfig.eve_client_id or not AppConfig.eve_client_secret:
+            logger.error('EVE SSO 配置缺失')
+            raise ServiceException(message='EVE SSO 配置缺失')
+
+        try:
+            async with httpx.AsyncClient() as client:
+                token_response = await client.post(
+                    'https://login.eveonline.com/v2/oauth/token',
+                    data={'grant_type': 'authorization_code', 'code': code},
+                    auth=(AppConfig.eve_client_id, AppConfig.eve_client_secret),
+                    headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                )
+                token_response.raise_for_status()
+                token_data = token_response.json()
+            eve_access_token = token_data.get('access_token')
+            if not eve_access_token:
+                logger.error('EVE SSO Token 响应无效')
+                raise ServiceException(message='EVE SSO Token 响应无效')
+
+            payload = jose_jwt.get_unverified_claims(eve_access_token)
+            character_sub = payload.get('sub', '')
+            if not character_sub or ':' not in character_sub:
+                logger.error(f'EVE SSO sub 格式异常: {character_sub}')
+                raise ServiceException(message='EVE SSO 角色信息解析失败')
+            character_id = character_sub.split(':')[-1]
+            character_name = payload.get('name') or payload.get('CharacterName') or character_id
+            logger.info(f'EVE SSO 角色: {character_name} (ID: {character_id})')
+
+            user = await UserDao.get_user_by_name(query_db, character_id)
+            if not user:
+                logger.info(f'EVE 角色 {character_name} 不存在，开始自动注册')
+                add_user = AddUserModel(
+                    userName=character_id,
+                    nickName=character_name,
+                    password=PwdUtil.get_password_hash(str(uuid.uuid4())),
+                    status='0',
+                    remark=f'EVE SSO 自动注册: {character_name}',
+                )
+                await UserService.add_user_services(query_db, add_user)
+                user = await UserDao.get_user_by_name(query_db, character_id)
+                if not user:
+                    logger.error('EVE 用户自动注册失败')
+                    raise ServiceException(message='用户创建失败')
+
+            user_info = await UserDao.get_user_by_id(query_db, user.user_id)
+            user_basic = user_info.get('user_basic_info')
+            user_dept = user_info.get('user_dept_info')
+            if not user_basic:
+                logger.error('EVE 用户数据异常，缺失基本信息')
+                raise ServiceException(message='用户信息不完整')
+
+            access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
+            session_id = str(uuid.uuid4())
+            access_token = await cls.create_access_token(
+                data={
+                    'user_id': str(user_basic.user_id),
+                    'user_name': user_basic.user_name,
+                    'dept_name': user_dept.dept_name if user_dept else None,
+                    'session_id': session_id,
+                    'login_info': {
+                        'login_type': 'EVE_SSO',
+                        'character_name': character_name,
+                        'character_id': character_id,
+                    },
+                },
+                expires_delta=access_token_expires,
+            )
+
+            redis_key = (
+                f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}'
+                if AppConfig.app_same_time_login
+                else f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{user_basic.user_id}'
+            )
+            await request.app.state.redis.set(redis_key, access_token, ex=timedelta(minutes=JwtConfig.jwt_redis_expire_minutes))
+
+            from module_admin.entity.vo.user_vo import EditUserModel
+            await UserService.edit_user_services(
+                query_db, EditUserModel(userId=user_basic.user_id, loginDate=datetime.now(), type='status')
+            )
+
+            logger.info(f'EVE SSO 登录成功: {character_name}')
+            return access_token
+        except httpx.HTTPStatusError as e:
+            logger.exception(f'EVE SSO Token 请求失败: {e}')
+            raise ServiceException(message='EVE SSO 授权失败，请重试') from e
+        except ServiceException:
+            raise
+        except Exception as e:
+            logger.exception(f'EVE SSO 处理异常: {e}')
+            raise ServiceException(message='EVE SSO 登录失败') from e
+
 
 class RouterUtil:
     """
@@ -655,124 +756,3 @@ class RouterUtil:
         for old, new in zip(old_values, new_values):
             path = path.replace(old, new)
         return path
-
-    @classmethod
-    async def process_eve_sso(cls, request: Request, query_db: AsyncSession, code: str) -> dict[str, str]:
-        """
-        处理 EVE SSO 回调逻辑：换取 token，解析用户信息，创建/更新用户，生成系统 JWT
-
-        :param request: Request对象
-        :param query_db: orm对象
-        :param code: EVE SSO 授权码
-        :return: 包含 access_token 的字典
-        """
-        if not AppConfig.eve_client_id or not AppConfig.eve_client_secret:
-            logger.error('EVE SSO 配置缺失')
-            raise ServiceException(message='EVE SSO 配置缺失')
-
-        try:
-            # 1. 使用 httpx 换取 EVE access_token
-            async with httpx.AsyncClient() as client:
-                token_response = await client.post(
-                    'https://login.eveonline.com/v2/oauth/token',
-                    data={
-                        'grant_type': 'authorization_code',
-                        'code': code,
-                    },
-                    auth=(AppConfig.eve_client_id, AppConfig.eve_client_secret),
-                    headers={'Content-Type': 'application/x-www-form-urlencoded'},
-                )
-                token_response.raise_for_status()
-                token_data = token_response.json()
-                eve_access_token = token_data.get('access_token')
-                
-                if not eve_access_token:
-                    logger.error('EVE SSO Token 响应无效')
-                    raise ServiceException(message='EVE SSO Token 响应无效')
-
-            # 2. 解析 EVE access_token 获取角色信息（不校验签名）
-            # EVE SSO v2 的 access_token 本身就是 JWT，sub 格式为 "CHARACTER:EVE:角色ID"
-            payload = jose_jwt.get_unverified_claims(eve_access_token)
-            character_sub = payload.get('sub', '')  # 例如 "CHARACTER:EVE:95465499"
-            character_name = payload.get('name', '')
-            
-            # 提取角色 ID
-            if ':' in character_sub:
-                character_id = character_sub.split(':')[-1]
-            else:
-                logger.error(f'EVE SSO sub 格式异常: {character_sub}')
-                raise ServiceException(message='EVE SSO 角色信息解析失败')
-            
-            logger.info(f'EVE SSO 角色: {character_name} (ID: {character_id})')
-
-            # 3. 根据 character_id 查找或创建用户
-            # 这里假设用户表有 user_name 字段，可以用 character_id 或 character_name 作为唯一标识
-            # 你可能需要在 SysUser 表中添加 eve_character_id 字段来关联
-            user = await UserDao.get_user_by_name(query_db, character_id)
-            
-            if not user:
-                # 自动注册逻辑：创建新用户
-                logger.info(f'EVE 角色 {character_name} 不存在，开始自动注册')
-                add_user = AddUserModel(
-                    userName=character_id,
-                    nickName=character_name,
-                    password=PwdUtil.get_password_hash(str(uuid.uuid4())),  # 随机密码，EVE 用户不使用密码登录
-                    status='0',
-                    remark=f'EVE SSO 自动注册: {character_name}',
-                )
-                # 调用用户服务创建用户（需要确保 UserService 有 add_user_services 方法）
-                await UserService.add_user_services(query_db, add_user)
-                user = await UserDao.get_user_by_name(query_db, character_id)
-                
-                if not user:
-                    logger.error('EVE 用户自动注册失败')
-                    raise ServiceException(message='用户创建失败')
-
-            # 4. 查询用户完整信息（包含部门）
-            user_info = await UserDao.get_user_by_id(query_db, user.user_id)
-            user_basic = user_info.get('user_basic_info')
-            user_dept = user_info.get('user_dept_info')
-
-            # 5. 生成系统 JWT Token（复用现有逻辑）
-            access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
-            session_id = str(uuid.uuid4())
-            access_token = await cls.create_access_token(
-                data={
-                    'user_id': str(user_basic.user_id),
-                    'user_name': user_basic.user_name,
-                    'dept_name': user_dept.dept_name if user_dept else None,
-                    'session_id': session_id,
-                    'login_info': {'login_type': 'EVE_SSO', 'character_name': character_name},
-                },
-                expires_delta=access_token_expires,
-            )
-
-            # 6. 将 token 存入 Redis（遵循系统登录限制规则）
-            if AppConfig.app_same_time_login:
-                await request.app.state.redis.set(
-                    f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}',
-                    access_token,
-                    ex=timedelta(minutes=JwtConfig.jwt_redis_expire_minutes),
-                )
-            else:
-                await request.app.state.redis.set(
-                    f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{user_basic.user_id}',
-                    access_token,
-                    ex=timedelta(minutes=JwtConfig.jwt_redis_expire_minutes),
-                )
-
-            # 7. 更新用户最后登录时间
-            from module_admin.entity.vo.user_vo import EditUserModel
-            await UserService.edit_user_services(
-                query_db, EditUserModel(userId=user_basic.user_id, loginDate=datetime.now(), type='status')
-            )
-
-            logger.info(f'EVE SSO 登录成功: {character_name}')
-            return {'access_token': access_token}
-
-        except httpx.HTTPStatusError as e:
-            logger.exception(f'EVE SSO Token 请求失败: {e}')
-            raise ServiceException(message='EVE SSO 授权失败，请重试') from e
-        except Exception as e:
-            logger.exception(f'EVE SSO 处理异常: {e}')
-            raise ServiceException(message='EVE SSO 登录失败') from e

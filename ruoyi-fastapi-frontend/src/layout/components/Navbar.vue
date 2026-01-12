@@ -34,29 +34,33 @@
         </el-tooltip>
       </template>
 
-      <el-dropdown v-if="userStore.token" @command="handleCommand" class="avatar-container right-menu-item hover-effect" trigger="hover">
-        <div class="avatar-wrapper">
-          <img :src="userStore.avatar" class="user-avatar" />
-          <span class="user-nickname"> {{ userStore.nickName }} </span>
-        </div>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <router-link to="/user/profile">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-            </router-link>
-            <el-dropdown-item command="setLayout" v-if="settingsStore.showSettings">
-                <span>布局设置</span>
+      <template v-if="userStore.token">
+        <el-dropdown @command="handleCommand" class="avatar-container right-menu-item hover-effect" trigger="hover">
+          <div class="avatar-wrapper">
+            <img :src="userStore.avatar" class="user-avatar" />
+            <span class="user-nickname"> {{ userStore.nickName }} </span>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <router-link to="/user/profile">
+                <el-dropdown-item>个人中心</el-dropdown-item>
+              </router-link>
+              <el-dropdown-item command="setLayout" v-if="settingsStore.showSettings">
+                  <span>布局设置</span>
+                </el-dropdown-item>
+              <el-dropdown-item divided command="logout">
+                <span>退出登录</span>
               </el-dropdown-item>
-            <el-dropdown-item divided command="logout">
-              <span>退出登录</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </template>
 
-      <div v-else class="right-menu-item">
-        <el-button type="primary" size="small" @click="handleSSOLogin">Login with EVE</el-button>
-      </div>
+      <template v-else>
+        <div class="right-menu-item">
+          <el-button type="primary" size="small" @click="handleSSOLogin">Login with EVE SSO</el-button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -121,8 +125,7 @@ function toggleTheme() {
 }
 
 function handleSSOLogin() {
-  // 跳转到后端的登录引导接口
-  window.location.href = import.meta.env.VITE_APP_BASE_API + '/auth/EVElogin'
+  window.location.href = import.meta.env.VITE_APP_BASE_API + '/auth/eve/login'
 }
 </script>
 
