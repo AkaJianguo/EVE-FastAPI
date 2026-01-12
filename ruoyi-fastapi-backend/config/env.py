@@ -105,11 +105,14 @@ class RedisSettings(BaseSettings):
 class SshSettings:
     ssh_host: str = '43.163.228.205'
     ssh_user: str = 'ubuntu'
-    ssh_key_path: str = '/Users/wangjianguo/.ssh/NEW_Key.pem'
+    # 必须加上 : str 类型注解，否则某些扫描逻辑会跳过它
+    # ssh_key_path: str = '/Users/wangjianguo/.ssh/NEW_Key.pem'
+    ssh_key_path: str = r'C:\Users\Administrator\.ssh\NEW_Key.pem'
     remote_port: int = 5432
 
     @classmethod
     def from_env(cls) -> 'SshSettings':
+        # 从环境变量读取，如果不存在则使用上面定义的默认值
         return cls(
             ssh_host=os.environ.get('SSH_HOST', cls.ssh_host),
             ssh_user=os.environ.get('SSH_USER', cls.ssh_user),
