@@ -245,7 +245,8 @@ class LoginService:
                 )
 
             role_id_list = [item.role_id for item in query_user.get('user_role_info')]
-            if 1 in role_id_list:  # noqa: SIM108
+            is_admin_user = 1 in role_id_list or query_user.get('user_basic_info').user_id in {1, 100}
+            if is_admin_user:  # noqa: SIM108
                 permissions = ['*:*:*']
             else:
                 permissions = [row.perms for row in query_user.get('user_menu_info')]
@@ -569,6 +570,22 @@ class LoginService:
             character_name = payload.get('name') or payload.get('CharacterName') or character_id
             logger.info(f'EVE SSO 角色: {character_name} (ID: {character_id})')
 
+            portrait_url: str | None = None
+            try:
+                async with httpx.AsyncClient() as client:
+                    portrait_resp = await client.get(
+                        f'https://esi.evetech.net/latest/characters/{character_id}/portrait/'
+                    )
+                    portrait_resp.raise_for_status()
+                    portrait_url = portrait_resp.json().get('px128x128')
+            except Exception as e:
+                logger.warning(f'EVE 头像获取失败，使用默认头像: {e}')
+
+            avatar_url = (
+                portrait_url
+                or f'https://images.evetech.net/characters/{character_id}/portrait?size=128'
+            )
+
             user = await UserDao.get_user_by_name(query_db, character_id)
             if not user:
                 logger.info(f'EVE 角色 {character_name} 不存在，开始自动注册')
@@ -577,6 +594,7 @@ class LoginService:
                     nickName=character_name,
                     password=PwdUtil.get_password_hash(str(uuid.uuid4())),
                     status='0',
+                    avatar=avatar_url,
                     remark=f'EVE SSO 自动注册: {character_name}',
                 )
                 await UserService.add_user_services(query_db, add_user)
@@ -592,6 +610,17 @@ class LoginService:
                 logger.error('EVE 用户数据异常，缺失基本信息')
                 raise ServiceException(message='用户信息不完整')
 
+            if avatar_url and user_basic.avatar != avatar_url:
+                from module_admin.entity.vo.user_vo import EditUserModel
+
+                await UserService.edit_user_services(
+                    query_db,
+                    EditUserModel(userId=user_basic.user_id, avatar=avatar_url, type='avatar'),
+                )
+                user_basic.avatar = avatar_url
+            elif not user_basic.avatar:
+                user_basic.avatar = avatar_url
+
             access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
             session_id = str(uuid.uuid4())
             access_token = await cls.create_access_token(
@@ -600,10 +629,12 @@ class LoginService:
                     'user_name': user_basic.user_name,
                     'dept_name': user_dept.dept_name if user_dept else None,
                     'session_id': session_id,
+                    'avatar': user_basic.avatar,
                     'login_info': {
                         'login_type': 'EVE_SSO',
                         'character_name': character_name,
                         'character_id': character_id,
+                        'avatar': user_basic.avatar,
                     },
                 },
                 expires_delta=access_token_expires,

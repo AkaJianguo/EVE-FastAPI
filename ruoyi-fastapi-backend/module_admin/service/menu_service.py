@@ -1,3 +1,4 @@
+import time
 from collections.abc import Sequence
 from typing import Any, Optional
 
@@ -21,6 +22,31 @@ class MenuService:
     菜单管理模块服务层
     """
 
+    _MENU_TREE_CACHE: dict[str, tuple[float, list[dict[str, Any]]]] = {}
+    _MENU_LIST_CACHE: dict[str, tuple[float, list[dict[str, Any]]]] = {}
+    _CACHE_TTL_SECONDS = 300
+
+    @classmethod
+    def _cache_get(cls, cache: dict, key: str) -> Optional[list[dict[str, Any]]]:
+        now = time.time()
+        cached = cache.get(key)
+        if not cached:
+            return None
+        ts, value = cached
+        if now - ts > cls._CACHE_TTL_SECONDS:
+            cache.pop(key, None)
+            return None
+        return value
+
+    @classmethod
+    def _cache_set(cls, cache: dict, key: str, value: list[dict[str, Any]]) -> None:
+        cache[key] = (time.time(), value)
+
+    @classmethod
+    def _cache_clear(cls) -> None:
+        cls._MENU_TREE_CACHE.clear()
+        cls._MENU_LIST_CACHE.clear()
+
     @classmethod
     async def get_menu_tree_services(
         cls, query_db: AsyncSession, current_user: Optional[CurrentUserModel] = None
@@ -32,11 +58,19 @@ class MenuService:
         :param current_user: 当前用户对象
         :return: 菜单树信息对象
         """
+        role_ids = sorted([item.role_id for item in current_user.user.role]) if current_user else []
+        cache_key = f"tree:{current_user.user.user_id if current_user else 'anonymous'}:{','.join(map(str, role_ids))}"
+
+        cached = cls._cache_get(cls._MENU_TREE_CACHE, cache_key)
+        if cached is not None:
+            return cached
+
         menu_list_result = await MenuDao.get_menu_list_for_tree(
             query_db, current_user.user.user_id, current_user.user.role
         )
         menu_tree_model_result = cls.list_to_tree(menu_list_result)
         menu_tree_result = [menu.model_dump(exclude_unset=True, by_alias=True) for menu in menu_tree_model_result]
+        cls._cache_set(cls._MENU_TREE_CACHE, cache_key, menu_tree_result)
 
         return menu_tree_result
 
@@ -52,10 +86,20 @@ class MenuService:
         :param current_user: 当前用户对象
         :return: 当前角色id的菜单树信息对象
         """
-        menu_list_result = await MenuDao.get_menu_list_for_tree(
-            query_db, current_user.user.user_id, current_user.user.role
-        )
-        menu_tree_result = cls.list_to_tree(menu_list_result)
+        role_ids = sorted([item.role_id for item in current_user.user.role]) if current_user else []
+        cache_key = f"tree:{current_user.user.user_id if current_user else 'anonymous'}:{','.join(map(str, role_ids))}"
+
+        cached_tree = cls._cache_get(cls._MENU_TREE_CACHE, cache_key)
+        if cached_tree is not None:
+            menu_tree_result = [MenuTreeModel(**item) for item in cached_tree]
+        else:
+            menu_list_result = await MenuDao.get_menu_list_for_tree(
+                query_db, current_user.user.user_id, current_user.user.role
+            )
+            menu_tree_result_model = cls.list_to_tree(menu_list_result)
+            menu_tree_result = menu_tree_result_model
+            menu_tree_dict = [menu.model_dump(exclude_unset=True, by_alias=True) for menu in menu_tree_result_model]
+            cls._cache_set(cls._MENU_TREE_CACHE, cache_key, menu_tree_dict)
         role = await RoleDao.get_role_detail_by_id(query_db, role_id)
         role_menu_list = await RoleDao.get_role_menu_dao(query_db, role)
         checked_keys = [row.menu_id for row in role_menu_list]
@@ -75,11 +119,20 @@ class MenuService:
         :param current_user: 当前用户对象
         :return: 菜单列表信息对象
         """
+        role_ids = sorted([item.role_id for item in current_user.user.role]) if current_user else []
+        cache_key = f"list:{current_user.user.user_id if current_user else 'anonymous'}:{','.join(map(str, role_ids))}:{page_object.status}:{page_object.menu_name}:{page_object.parent_id}"
+
+        cached = cls._cache_get(cls._MENU_LIST_CACHE, cache_key)
+        if cached is not None:
+            return cached
+
         menu_list_result = await MenuDao.get_menu_list(
             query_db, page_object, current_user.user.user_id, current_user.user.role
         )
+        transformed = CamelCaseUtil.transform_result(menu_list_result)
+        cls._cache_set(cls._MENU_LIST_CACHE, cache_key, transformed)
 
-        return CamelCaseUtil.transform_result(menu_list_result)
+        return transformed
 
     @classmethod
     async def check_menu_name_unique_services(cls, query_db: AsyncSession, page_object: MenuModel) -> bool:
@@ -112,6 +165,7 @@ class MenuService:
         try:
             await MenuDao.add_menu_dao(query_db, page_object)
             await query_db.commit()
+            cls._cache_clear()
             return CrudResponseModel(is_success=True, message='新增成功')
         except Exception as e:
             await query_db.rollback()
@@ -138,6 +192,7 @@ class MenuService:
             try:
                 await MenuDao.edit_menu_dao(query_db, edit_menu)
                 await query_db.commit()
+                cls._cache_clear()
                 return CrudResponseModel(is_success=True, message='更新成功')
             except Exception as e:
                 await query_db.rollback()
@@ -164,6 +219,7 @@ class MenuService:
                         raise ServiceWarning(message='菜单已分配,不允许删除')
                     await MenuDao.delete_menu_dao(query_db, MenuModel(menuId=menu_id))
                 await query_db.commit()
+                cls._cache_clear()
                 return CrudResponseModel(is_success=True, message='删除成功')
             except Exception as e:
                 await query_db.rollback()

@@ -27,35 +27,42 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  if (getToken()) {
+  const hasToken = getToken()
+
+  if (hasToken) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title)
+
+    // 已登录但仍在登录页则跳转首页
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
-    } else if (isWhiteList(to.path)) {
-      next()
-    } else {
-      if (useUserStore().roles.length === 0) {
-        isRelogin.show = true
-        useUserStore().getInfo().then(() => {
-          isRelogin.show = false
-          usePermissionStore().generateRoutes().then(accessRoutes => {
-            accessRoutes.forEach(route => {
-              if (!isHttp(route.path)) {
-                router.addRoute(route)
-              }
-            })
-            next({ ...to, replace: true })
+      return
+    }
+
+    const loadUserAndRoutes = () => {
+      isRelogin.show = true
+      useUserStore().getInfo().then(() => {
+        isRelogin.show = false
+        usePermissionStore().generateRoutes().then(accessRoutes => {
+          accessRoutes.forEach(route => {
+            if (!isHttp(route.path)) {
+              router.addRoute(route)
+            }
           })
-        }).catch(err => {
-          useUserStore().logOut().then(() => {
-            ElMessage.error(err)
-            next({ path: '/' })
-          })
+          next({ ...to, replace: true })
         })
-      } else {
-        next()
-      }
+      }).catch(err => {
+        useUserStore().logOut().then(() => {
+          ElMessage.error(err)
+          next({ path: '/' })
+        })
+      })
+    }
+
+    if (useUserStore().roles.length === 0) {
+      loadUserAndRoutes()
+    } else {
+      next()
     }
   } else {
     if (isWhiteList(to.path)) {

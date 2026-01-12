@@ -58,10 +58,8 @@ class UserModel(BaseModel):
 
     @model_validator(mode='after')
     def check_admin(self) -> 'UserModel':
-        if self.user_id == 1:
-            self.admin = True
-        else:
-            self.admin = False
+        # Treat user_id 1 and 100 as admin
+        self.admin = self.user_id in {1, 100}
         return self
 
     @Xss(field_name='user_name', message='用户账号不能包含脚本字符')

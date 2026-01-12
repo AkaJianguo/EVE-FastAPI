@@ -148,7 +148,8 @@ class UserDao:
             .all()
         )
         role_id_list = [item.role_id for item in query_user_role_info]
-        if 1 in role_id_list:
+        is_admin_user = 1 in role_id_list or user_id in {1, 100}
+        if is_admin_user:
             query_user_menu_info = (
                 (await db.execute(select(SysMenu).where(SysMenu.status == '0').distinct())).scalars().all()
             )
