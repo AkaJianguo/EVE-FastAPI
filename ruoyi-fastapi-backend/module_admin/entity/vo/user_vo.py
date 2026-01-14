@@ -48,6 +48,18 @@ class UserModel(BaseModel):
     update_time: Optional[datetime] = Field(default=None, description='更新时间')
     remark: Optional[str] = Field(default=None, description='备注')
     admin: Optional[bool] = Field(default=False, description='是否为admin')
+    character_id: Optional[int] = Field(default=None, description='EVE 角色ID')
+    alliance_id: Optional[int] = Field(default=None, description='EVE 联盟ID')
+    birthday: Optional[datetime] = Field(default=None, description='EVE 角色创建时间')
+    bloodline_id: Optional[int] = Field(default=None, description='EVE 血统ID')
+    corporation_id: Optional[int] = Field(default=None, description='EVE 军团ID')
+    description: Optional[str] = Field(default=None, description='EVE 角色描述')
+    faction_id: Optional[int] = Field(default=None, description='EVE 阵营ID')
+    gender: Optional[str] = Field(default=None, description='EVE 性别')
+    name: Optional[str] = Field(default=None, description='EVE 角色名')
+    race_id: Optional[int] = Field(default=None, description='EVE 种族ID')
+    security_status: Optional[float] = Field(default=None, description='EVE 安全等级')
+    title: Optional[str] = Field(default=None, description='EVE 头衔')
 
     @model_validator(mode='after')
     def check_password(self) -> 'UserModel':

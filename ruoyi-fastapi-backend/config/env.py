@@ -106,8 +106,8 @@ class SshSettings:
     ssh_host: str = '43.163.228.205'
     ssh_user: str = 'ubuntu'
     # 必须加上 : str 类型注解，否则某些扫描逻辑会跳过它
-    # ssh_key_path: str = '/Users/wangjianguo/.ssh/NEW_Key.pem'
-    ssh_key_path: str = r'C:\Users\Administrator\.ssh\NEW_Key.pem'
+    ssh_key_path: str = '/Users/wangjianguo/.ssh/NEW_Key.pem'
+    # ssh_key_path: str = r'C:\Users\Administrator\.ssh\NEW_Key.pem'
     remote_port: int = 5432
 
     @classmethod

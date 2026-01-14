@@ -11,7 +11,9 @@ from jose import jwt as jose_jwt
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy import Row
 from sqlalchemy.ext.asyncio import AsyncSession
+from user_agents import parse
 
+from common.annotation.log_annotation import get_ip_location
 from common.constant import CommonConstant, MenuConstant
 from common.context import RequestContext
 from common.enums import RedisInitKeyConfig
@@ -24,8 +26,10 @@ from module_admin.dao.user_dao import UserDao
 from module_admin.entity.do.dept_do import SysDept
 from module_admin.entity.do.menu_do import SysMenu
 from module_admin.entity.do.user_do import SysUser
+from module_admin.entity.vo.log_vo import LogininforModel
 from module_admin.entity.vo.login_vo import MenuTreeModel, MetaModel, RouterModel, SmsCode, UserLogin, UserRegister
 from module_admin.entity.vo.user_vo import AddUserModel, CurrentUserModel, ResetUserModel, TokenData, UserInfoModel
+from module_admin.service.log_service import LoginLogService
 from module_admin.service.user_service import UserService
 from utils.common_util import CamelCaseUtil
 from utils.log_util import logger
@@ -570,6 +574,52 @@ class LoginService:
             character_name = payload.get('name') or payload.get('CharacterName') or character_id
             logger.info(f'EVE SSO 角色: {character_name} (ID: {character_id})')
 
+            # 拉取角色详细资料
+            character_profile: dict[str, Any] = {}
+            try:
+                async with httpx.AsyncClient() as client:
+                    profile_resp = await client.get(
+                        f'https://esi.evetech.net/latest/characters/{character_id}/'
+                    )
+                    profile_resp.raise_for_status()
+                    character_profile = profile_resp.json()
+            except Exception as e:
+                logger.warning(f'EVE 角色信息获取失败，使用基础信息: {e}')
+
+            def _parse_birthday(raw: Any) -> Optional[datetime]:
+                if not raw:
+                    return None
+                try:
+                    if isinstance(raw, str):
+                        return datetime.fromisoformat(raw.replace('Z', '+00:00')).replace(tzinfo=None)
+                except Exception:
+                    return None
+                return None
+
+            # 记录来源 IP（优先 X-Forwarded-For，其次直接连接 IP）
+            client_ip = (
+                request.headers.get('X-Forwarded-For')
+                or (request.client.host if request.client else None)
+                or ''
+            )
+            login_time = datetime.now()
+            login_location = '内网IP'
+            if AppConfig.app_ip_location_query:
+                login_location = await get_ip_location(client_ip)
+
+            user_agent = request.headers.get('User-Agent', '')
+            browser, os_info = '', ''
+            try:
+                ua = parse(user_agent)
+                browser = ua.browser.family
+                if ua.browser.version:
+                    browser = f"{browser} {ua.browser.version[0]}"
+                os_info = ua.os.family
+                if ua.os.version:
+                    os_info = f"{os_info} {ua.os.version[0]}"
+            except Exception:
+                pass
+
             portrait_url: str | None = None
             try:
                 async with httpx.AsyncClient() as client:
@@ -586,19 +636,31 @@ class LoginService:
                 or f'https://images.evetech.net/characters/{character_id}/portrait?size=128'
             )
 
-            user = await UserDao.get_user_by_name(query_db, character_id)
+            user = await UserDao.get_user_by_character_id(query_db, character_id)
             if not user:
                 logger.info(f'EVE 角色 {character_name} 不存在，开始自动注册')
                 add_user = AddUserModel(
-                    userName=character_id,
-                    nickName=character_name,
+                    userName=character_profile.get('name') or character_name,
+                    nickName=character_profile.get('name') or character_name,
                     password=PwdUtil.get_password_hash(str(uuid.uuid4())),
                     status='0',
                     avatar=avatar_url,
                     remark=f'EVE SSO 自动注册: {character_name}',
+                    characterId=int(character_id),
+                    allianceId=character_profile.get('alliance_id'),
+                    birthday=_parse_birthday(character_profile.get('birthday')),
+                    bloodlineId=character_profile.get('bloodline_id'),
+                    corporationId=character_profile.get('corporation_id'),
+                    description=character_profile.get('description'),
+                    factionId=character_profile.get('faction_id'),
+                    gender=character_profile.get('gender'),
+                    name=character_profile.get('name') or character_name,
+                    raceId=character_profile.get('race_id'),
+                    securityStatus=character_profile.get('security_status'),
+                    title=character_profile.get('title'),
                 )
                 await UserService.add_user_services(query_db, add_user)
-                user = await UserDao.get_user_by_name(query_db, character_id)
+                user = await UserDao.get_user_by_character_id(query_db, character_id)
                 if not user:
                     logger.error('EVE 用户自动注册失败')
                     raise ServiceException(message='用户创建失败')
@@ -609,6 +671,34 @@ class LoginService:
             if not user_basic:
                 logger.error('EVE 用户数据异常，缺失基本信息')
                 raise ServiceException(message='用户信息不完整')
+
+            # 同步角色资料
+            try:
+                from module_admin.entity.vo.user_vo import EditUserModel
+
+                await UserService.edit_user_services(
+                    query_db,
+                    EditUserModel(
+                        userId=user_basic.user_id,
+                        userName=character_profile.get('name') or character_name,
+                        nickName=character_profile.get('name') or character_name,
+                        characterId=int(character_id),
+                        allianceId=character_profile.get('alliance_id'),
+                        birthday=_parse_birthday(character_profile.get('birthday')),
+                        bloodlineId=character_profile.get('bloodline_id'),
+                        corporationId=character_profile.get('corporation_id'),
+                        description=character_profile.get('description'),
+                        factionId=character_profile.get('faction_id'),
+                        gender=character_profile.get('gender'),
+                        name=character_profile.get('name') or character_name,
+                        raceId=character_profile.get('race_id'),
+                        securityStatus=character_profile.get('security_status'),
+                        title=character_profile.get('title'),
+                        type='status',
+                    ),
+                )
+            except Exception as e:
+                logger.warning(f'EVE 资料同步失败: {e}')
 
             if avatar_url and user_basic.avatar != avatar_url:
                 from module_admin.entity.vo.user_vo import EditUserModel
@@ -621,6 +711,12 @@ class LoginService:
             elif not user_basic.avatar:
                 user_basic.avatar = avatar_url
 
+            # 内存态同步关键字段，确保后续 token 使用最新值
+            user_basic.user_name = character_profile.get('name') or character_name
+            user_basic.nick_name = character_profile.get('name') or character_name
+            user_basic.character_id = int(character_id)
+            user_basic.name = character_profile.get('name') or character_name
+
             access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
             session_id = str(uuid.uuid4())
             access_token = await cls.create_access_token(
@@ -630,11 +726,17 @@ class LoginService:
                     'dept_name': user_dept.dept_name if user_dept else None,
                     'session_id': session_id,
                     'avatar': user_basic.avatar,
+                    'login_ip': client_ip,
                     'login_info': {
                         'login_type': 'EVE_SSO',
                         'character_name': character_name,
                         'character_id': character_id,
                         'avatar': user_basic.avatar,
+                        'ipaddr': client_ip,
+                        'loginLocation': login_location,
+                        'browser': browser,
+                        'os': os_info,
+                        'loginTime': login_time.strftime('%Y-%m-%d %H:%M:%S'),
                     },
                 },
                 expires_delta=access_token_expires,
@@ -649,8 +751,32 @@ class LoginService:
 
             from module_admin.entity.vo.user_vo import EditUserModel
             await UserService.edit_user_services(
-                query_db, EditUserModel(userId=user_basic.user_id, loginDate=datetime.now(), type='status')
+                query_db,
+                EditUserModel(
+                    userId=user_basic.user_id,
+                    loginDate=datetime.now(),
+                    loginIp=client_ip,
+                    type='status',
+                ),
             )
+
+            # 记录 EVE SSO 登录日志（含 IP 归属地）
+            try:
+                await LoginLogService.add_login_log_services(
+                    query_db,
+                    LogininforModel(
+                        userName=user_basic.user_name,
+                        ipaddr=client_ip,
+                        loginLocation=login_location,
+                        browser=browser,
+                        os=os_info,
+                        status='0',
+                        msg='登录成功',
+                        loginTime=login_time,
+                    ),
+                )
+            except Exception as log_err:
+                logger.warning(f'EVE 登录日志记录失败: {log_err}')
 
             logger.info(f'EVE SSO 登录成功: {character_name}')
             return access_token

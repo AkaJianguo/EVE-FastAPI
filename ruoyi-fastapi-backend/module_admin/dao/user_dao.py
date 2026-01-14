@@ -52,6 +52,34 @@ class UserDao:
         return query_user_info
 
     @classmethod
+    async def get_user_by_character_id(cls, db: AsyncSession, character_id: Union[int, str]) -> Union[SysUser, None]:
+        """
+        根据 EVE 角色ID 获取用户信息
+
+        :param db: orm对象
+        :param character_id: EVE 角色ID
+        :return: 当前角色ID的用户信息对象
+        """
+        query_user_info = (
+            (
+                await db.execute(
+                    select(SysUser)
+                    .where(
+                        SysUser.status == '0',
+                        SysUser.del_flag == '0',
+                        SysUser.character_id == int(character_id),
+                    )
+                    .order_by(desc(SysUser.create_time))
+                    .distinct()
+                )
+            )
+            .scalars()
+            .first()
+        )
+
+        return query_user_info
+
+    @classmethod
     async def get_user_by_info(cls, db: AsyncSession, user: UserModel) -> Union[SysUser, None]:
         """
         根据用户参数获取用户信息

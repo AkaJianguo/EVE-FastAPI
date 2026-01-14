@@ -60,14 +60,41 @@ create table sys_user (
   update_by         varchar(64)     default ''                 comment '更新者',
   update_time       datetime                                   comment '更新时间',
   remark            varchar(500)    default null               comment '备注',
+  character_id      bigint(20)      default null               comment 'EVE 角色ID',
+  alliance_id       bigint(20)      default null               comment 'EVE 联盟ID',
+  birthday          datetime                                   comment 'EVE 角色创建时间',
+  bloodline_id      bigint(20)      default null               comment 'EVE 血统ID',
+  corporation_id    bigint(20)      default null               comment 'EVE 军团ID',
+  description       varchar(2000)   default null               comment 'EVE 角色描述',
+  faction_id        bigint(20)      default null               comment 'EVE 阵营ID',
+  gender            varchar(10)     default null               comment 'EVE 性别',
+  name              varchar(100)    default null               comment 'EVE 角色名',
+  race_id           bigint(20)      default null               comment 'EVE 种族ID',
+  security_status   double          default null               comment 'EVE 安全等级',
+  title             varchar(200)    default null               comment 'EVE 头衔',
   primary key (user_id)
 ) engine=innodb auto_increment=100 comment = '用户信息表';
 
 -- ----------------------------
 -- 初始化-用户信息表数据
 -- ----------------------------
-insert into sys_user values(1,  103, 'admin',   '超级管理员', '00', 'niangao@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '管理员');
-insert into sys_user values(2,  105, 'niangao', '年糕', 			'00', 'niangao@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '测试员');
+insert into sys_user (
+  user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, password,
+  status, del_flag, login_ip, login_date, pwd_update_date, create_by, create_time, update_by,
+  update_time, remark, character_id, alliance_id, birthday, bloodline_id, corporation_id, description,
+  faction_id, gender, name, race_id, security_status, title
+) values
+(1, 103, 'admin', '超级管理员', '00', 'niangao@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2',
+ '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '管理员', null, null, null, null, null, null, null, null, null, null, null, null);
+
+insert into sys_user (
+  user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, password,
+  status, del_flag, login_ip, login_date, pwd_update_date, create_by, create_time, update_by,
+  update_time, remark, character_id, alliance_id, birthday, bloodline_id, corporation_id, description,
+  faction_id, gender, name, race_id, security_status, title
+) values
+(2, 105, 'niangao', '年糕', '00', 'niangao@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2',
+ '0', '0', '127.0.0.1', sysdate(), sysdate(), 'admin', sysdate(), '', null, '测试员', null, null, null, null, null, null, null, null, null, null, null, null);
 
 
 -- ----------------------------

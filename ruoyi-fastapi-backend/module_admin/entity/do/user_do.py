@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import CHAR, BigInteger, Column, DateTime, String
+from sqlalchemy import CHAR, BigInteger, Column, DateTime, Float, String
 
 from config.database import Base
 from config.env import DataBaseConfig
@@ -45,6 +45,18 @@ class SysUser(Base):
         server_default=SqlalchemyUtil.get_server_default_null(DataBaseConfig.db_type),
         comment='备注',
     )
+    character_id = Column(BigInteger, nullable=True, comment='EVE 角色ID')
+    alliance_id = Column(BigInteger, nullable=True, comment='EVE 联盟ID')
+    birthday = Column(DateTime, nullable=True, comment='EVE 角色创建时间')
+    bloodline_id = Column(BigInteger, nullable=True, comment='EVE 血统ID')
+    corporation_id = Column(BigInteger, nullable=True, comment='EVE 军团ID')
+    description = Column(String(2000), nullable=True, comment='EVE 角色描述')
+    faction_id = Column(BigInteger, nullable=True, comment='EVE 阵营ID')
+    gender = Column(String(10), nullable=True, comment='EVE 性别')
+    name = Column(String(100), nullable=True, comment='EVE 角色名')
+    race_id = Column(BigInteger, nullable=True, comment='EVE 种族ID')
+    security_status = Column(Float, nullable=True, comment='EVE 安全等级')
+    title = Column(String(200), nullable=True, comment='EVE 头衔')
 
 
 class SysUserRole(Base):
