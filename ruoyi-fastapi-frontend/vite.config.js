@@ -39,15 +39,17 @@ export default defineConfig(({ mode, command }) => {
       }
     },
     // vite 相关配置
-    server: {
+   server: {
       port: 80,
       host: true,
       open: true,
       proxy: {
-        // https://cn.vitejs.dev/config/#server-proxy
+        // 本地开发环境代理配置
         '/dev-api': {
-          target: 'http://127.0.0.1:9099',
+          // 后端在 Docker 中运行，本地访问使用 127.0.0.1:19099
+          target: 'http://127.0.0.1:19099', 
           changeOrigin: true,
+          // 直接删除 /dev-api 前缀，后端有 pre_auth 拦截器处理路由重写
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         }
       }

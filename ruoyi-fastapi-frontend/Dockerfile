@@ -1,28 +1,25 @@
-# 构建阶段
-FROM node:18-slim AS builder
+# 使用稳定的 LTS 版本
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-# 复制源代码
-COPY . .
-
-# 设置npm镜像源
+# 1. 直接设置国内镜像源（去掉报错的 unsafe-perm）
 RUN npm config set registry https://registry.npmmirror.com
 
-# 安装依赖
-RUN npm install
+# 2. 复制依赖描述文件
+COPY package.json ./
 
-# 执行docker构建命令
+# 3. 安装依赖
+# 建议加上 --no-package-lock，可以有效避免之前遇到的 'matches' 报错
+RUN npm install --no-package-lock
+
+# 4. 复制源码并执行构建
+COPY . .
+# 使用 Docker 环境配置（VITE_APP_BASE_API = '/docker-api'）
 RUN npm run build:docker
 
-# 运行阶段
-FROM nginx:latest
-WORKDIR /usr/share/nginx/html
-
-# 复制构建产物
-COPY --from=builder /app/dist .
-
-# 暴露端口
+# --- 运行阶段 ---
+FROM nginx:stable-alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
-
-# 启动nginx
 CMD ["nginx", "-g", "daemon off;"]

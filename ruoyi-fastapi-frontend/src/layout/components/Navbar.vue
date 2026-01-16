@@ -117,6 +117,7 @@ function toggleTheme() {
 
 function handleSSOLogin() {
   window.location.href = import.meta.env.VITE_APP_BASE_API + '/auth/eve/login'
+  console.log("🚀 ~ handleSSOLogin ~ window.location.href :", window.location.href )
 }
 </script>
 

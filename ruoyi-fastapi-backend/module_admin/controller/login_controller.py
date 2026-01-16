@@ -242,7 +242,7 @@ async def eve_sso_callback(
     if not cached_state or cached_state != state:
         logger.warning('EVE SSO state 校验失败')
         frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
-        return RedirectResponse(url=f"{frontend_base}/index?error=invalid_state")
+        return RedirectResponse(url=f"{frontend_base}/?error=invalid_state")
     
     # 删除已使用的 state
     await request.app.state.redis.delete(f'{RedisInitKeyConfig.EVE_SSO_STATE.key}:{state}')
@@ -251,11 +251,12 @@ async def eve_sso_callback(
         # 调用 service 处理 EVE SSO 逻辑
         access_token = await LoginService.process_eve_sso(request, query_db, code)
         frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
-        frontend_url = f"{frontend_base}/index?token={access_token}"
+        # 重定向到首页并携带 token，前端路由会自动处理
+        frontend_url = f"{frontend_base}/?token={access_token}"
         logger.info('EVE SSO 登录成功，跳转前端')
         return RedirectResponse(url=frontend_url)
     except Exception as e:
         logger.exception(f'EVE SSO 回调处理失败: {e}')
         frontend_base = (AppConfig.frontend_url or 'http://localhost:80').rstrip('/')
-        return RedirectResponse(url=f"{frontend_base}/index?error=sso_failed")
+        return RedirectResponse(url=f"{frontend_base}/?error=sso_failed")
 
