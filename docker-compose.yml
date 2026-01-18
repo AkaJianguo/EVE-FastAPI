@@ -1,93 +1,86 @@
 version: '3.8'
 
 services:
-  # 1. 前端服务：处理页面显示与 API 转发
-  ruoyi-frontend:
-    build:
-      context: ./ruoyi-fastapi-frontend
-      dockerfile: Dockerfile
-    image: ruoyi-frontend:latest
-    container_name: ruoyi-frontend
+  # 1. 数据库服务
+  ruoyi-pg:
+    image: postgres:15-alpine
+    container_name: ${DB_CONTAINER_NAME}
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - "12580:80"
+      - "${DB_EXTERNAL_PORT}:5432"
     volumes:
-      # 挂载本地 Nginx 配置，确保转发逻辑与线上一致
-      - ./ruoyi-fastapi-frontend/bin/nginx.dockerpg.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - ruoyi-backend-pg
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      interval: 5s
     networks:
       - ruoyi-network
 
-  # 2. 后端服务：FastAPI 业务逻辑
+  # 2. Redis 服务
+  ruoyi-redis:
+    image: redis:7-alpine
+    container_name: ruoyi-redis
+    restart: always
+    networks:
+      - ruoyi-network
+
+  # 3. 后端服务
   ruoyi-backend-pg:
     build:
       context: ./ruoyi-fastapi-backend
       dockerfile: Dockerfile.pg
-    image: ruoyi-backend-pg:latest
-    container_name: ruoyi-backend-pg
+    container_name: eve_backend
+    restart: always
     ports:
-      - "19099:9099"
-    volumes:
-      # 核心：挂载本地代码目录，实现“修改代码即生效” (Hot Reload)
-      - ./ruoyi-fastapi-backend:/app
+      - "${BACKEND_EXTERNAL_PORT}:9099"
     environment:
       - ENV=dockerpg
-      - DB_HOST=ruoyi-pg
+      - DB_HOST=ruoyi-pg  # 对应数据库服务名
       - DB_PORT=5432
-      - DB_NAME=ruoyi-fastapi
-      - DB_USER=postgres
-      - DB_PASSWORD=root
-      - REDIS_HOST=ruoyi-redis
-      - FRONTEND_URL=http://localhost:12580
-      - EVE_CLIENT_ID=0f2b035a0dfa4487afb4fbc80668fae4
-      - EVE_CLIENT_SECRET=eat_2EIXRPiDGUn355E63y69MfoS7ZgZTse8_1e0QXy
-      - EVE_CALLBACK_URL=http://localhost:12580/docker-api/auth/eve/callback
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_NAME}
+      - EVE_CLIENT_ID=${EVE_CLIENT_ID}
+      - EVE_CLIENT_SECRET=${EVE_CLIENT_SECRET}
+      - EVE_CALLBACK_URL=${EVE_CALLBACK_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       ruoyi-pg:
         condition: service_healthy
       ruoyi-redis:
+        condition: service_started
+    networks:
+      - ruoyi-network
+
+  # 4. SDE 处理器 (指向上一级)
+  sde-processor:
+    build:
+      context: ../eve-sde-processor
+    container_name: eve_sde_worker
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@ruoyi-pg:5432/${DB_NAME}
+    depends_on:
+      ruoyi-pg:
         condition: service_healthy
     networks:
       - ruoyi-network
 
-  # 3. PostgreSQL：本地数据库（版本对齐线上 15-alpine）
-  ruoyi-pg:
-    image: postgres:15-alpine
-    container_name: ruoyi-pg
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=ruoyi-fastapi
-      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C
+  # 5. 前端服务
+  frontend:
+    build:
+      context: ./ruoyi-fastapi-frontend
+    container_name: eve_frontend
+    restart: always
     ports:
-      - "15432:5432" # 方便本地 Navicat/DBeaver 连接调试
-    volumes:
-      # 数据持久化，确保你同步回来的 SDE 数据不会因容器重启丢失
-      - ./postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - "${FRONTEND_EXTERNAL_PORT}:80"
     networks:
       - ruoyi-network
 
-  # 4. Redis：本地缓存服务
-  ruoyi-redis:
-    image: redis:latest
-    container_name: ruoyi-redis
-    ports:
-      - "16379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ruoyi-network
-
-# 网络隔离配置
 networks:
-  ruoyi-network:
-    name: ruoyi-network
+  ruoyi-network: # 统一使用你要求的网络名称
     driver: bridge
