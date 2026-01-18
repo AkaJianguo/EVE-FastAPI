@@ -57,18 +57,18 @@ services:
       - ruoyi-network
 
   # 4. SDE 处理器 (指向上一级)
-  sde-processor:
-    build:
-      context: ../eve-sde-processor
-    container_name: eve_sde_worker
-    restart: always
-    environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@ruoyi-pg:5432/${DB_NAME}
-    depends_on:
-      ruoyi-pg:
-        condition: service_healthy
-    networks:
-      - ruoyi-network
+  # sde-processor:
+  #   build:
+  #     context: ../eve-sde-processor
+  #   container_name: eve_sde_worker
+  #   restart: always
+  #   environment:
+  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@ruoyi-pg:5432/${DB_NAME}
+  #   depends_on:
+  #     ruoyi-pg:
+  #       condition: service_healthy
+  #   networks:
+  #     - ruoyi-network
 
   # 5. 前端服务
   frontend:
@@ -78,6 +78,9 @@ services:
     restart: always
     ports:
       - "${FRONTEND_EXTERNAL_PORT}:80"
+    volumes:
+      # 建议使用相对当前目录的路径，并确保文件确实存在
+      - ./ruoyi-fastapi-frontend/bin/nginx.dockerpg.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - ruoyi-network
 
