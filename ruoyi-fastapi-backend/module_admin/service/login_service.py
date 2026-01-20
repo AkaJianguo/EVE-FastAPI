@@ -1,3 +1,4 @@
+import asyncio
 import random
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -14,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from user_agents import parse
 
 from common.annotation.log_annotation import get_ip_location
-from common.constant import CommonConstant, MenuConstant
+from common.constant import CommonConstant, HttpStatusConstant, MenuConstant
 from common.context import RequestContext
 from common.enums import RedisInitKeyConfig
 from common.vo import CrudResponseModel
@@ -29,6 +30,7 @@ from module_admin.entity.do.user_do import SysUser
 from module_admin.entity.vo.log_vo import LogininforModel
 from module_admin.entity.vo.login_vo import MenuTreeModel, MetaModel, RouterModel, SmsCode, UserLogin, UserRegister
 from module_admin.entity.vo.user_vo import AddUserModel, CurrentUserModel, ResetUserModel, TokenData, UserInfoModel
+from module_admin.service.eve_sync_service import EveSyncService
 from module_admin.service.log_service import LoginLogService
 from module_admin.service.user_service import UserService
 from utils.common_util import CamelCaseUtil
@@ -586,6 +588,16 @@ class LoginService:
             except Exception as e:
                 logger.warning(f'EVE 角色信息获取失败，使用基础信息: {e}')
 
+            corporation_id = character_profile.get('corporation_id')
+            alliance_id = character_profile.get('alliance_id')
+            sync_tasks = []
+            if corporation_id:
+                sync_tasks.append(EveSyncService.sync_corporation(query_db, corporation_id))
+            if alliance_id:
+                sync_tasks.append(EveSyncService.sync_alliance(query_db, alliance_id))
+            if sync_tasks:
+                await asyncio.gather(*sync_tasks)
+
             def _parse_birthday(raw: Any) -> Optional[datetime]:
                 if not raw:
                     return None
@@ -687,6 +699,7 @@ class LoginService:
                         birthday=_parse_birthday(character_profile.get('birthday')),
                         bloodlineId=character_profile.get('bloodline_id'),
                         corporationId=character_profile.get('corporation_id'),
+                        allianceId=character_profile.get('alliance_id'),
                         description=character_profile.get('description'),
                         factionId=character_profile.get('faction_id'),
                         gender=character_profile.get('gender'),
@@ -715,7 +728,15 @@ class LoginService:
             user_basic.user_name = character_profile.get('name') or character_name
             user_basic.nick_name = character_profile.get('name') or character_name
             user_basic.character_id = int(character_id)
+            user_basic.corporation_id = int(character_profile.get('corporation_id')) if character_profile.get('corporation_id') else None
+            user_basic.alliance_id = int(character_profile.get('alliance_id')) if character_profile.get('alliance_id') else None
             user_basic.name = character_profile.get('name') or character_name
+
+            role_id_list = [item.role_id for item in user_info.get('user_role_info')]
+            is_admin_user = 1 in role_id_list or user_basic.user_id in {1, 100}
+            corp_authorized = await EveSyncService.check_corp_authorized(query_db, user_basic.corporation_id)
+            if not corp_authorized and not is_admin_user:
+                raise ServiceException(message='您的军团尚未获得授权，请联系管理员', data=None, code=HttpStatusConstant.FORBIDDEN)
 
             access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
             session_id = str(uuid.uuid4())

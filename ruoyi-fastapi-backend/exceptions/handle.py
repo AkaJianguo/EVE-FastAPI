@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import HTTPException
 from pydantic_validation_decorator import FieldValidationError
 
+from common.constant import HttpStatusConstant
 from exceptions.exception import (
     AuthException,
     LoginException,
@@ -50,6 +51,10 @@ def handle_exception(app: FastAPI) -> None:
     @app.exception_handler(ServiceException)
     async def service_exception_handler(request: Request, exc: ServiceException) -> Response:
         logger.error(exc.message)
+        if exc.code == HttpStatusConstant.FORBIDDEN:
+            return ResponseUtil.forbidden(data=exc.data, msg=exc.message)
+        if exc.code == HttpStatusConstant.UNAUTHORIZED:
+            return ResponseUtil.unauthorized(data=exc.data, msg=exc.message)
         return ResponseUtil.error(data=exc.data, msg=exc.message)
 
     # 自定义服务警告
