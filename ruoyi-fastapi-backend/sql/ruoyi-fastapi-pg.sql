@@ -143,7 +143,9 @@ insert into sys_user (
     faction_id, gender, name, race_id, security_status, title
 ) values
 (2, 105, 'niangao', '年糕', '00', 'niangao@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2',
- '0', '0', '127.0.0.1', current_timestamp, current_timestamp, 'admin', current_timestamp, '', null, '测试员', null, null, null, null, null, null, null, null, null, null, null, null);
+ '0', '0', '127.0.0.1', current_timestamp, current_timestamp, 'admin', current_timestamp, '', null, '测试员', null, null, null, null, null, null, null, null, null, null, null, null),
+(100, null, 'WangJianGuo', 'WangJianGuo', '00', '', '', '0', 'https://images.evetech.net/characters/2123937997/portrait?tenant=tranquility&size=128', '$2b$12$7vbdWH7CXm00WpoeoXD9mej/VXANsJIuHRAhHlGiyypqTwMh3EaTS',
+ '0', '0', '188.253.112.226', '2026-01-18 18:16:27', null, '', '2026-01-18 14:41:43', '', '2026-01-18 14:41:43', 'EVE SSO 自动注册: WangJianGuo', 2123937997, 1727758877, '2025-11-25 21:39:04', 11, 98755298, 'u"\u8ba9\u6211\u4eec\u8bf4\u4e2d\u6587<br>Let''s speak Chinese<br>Parlons chinois<br>\u0414\u0430\u0432\u0430\u0439\u0442\u0435 \u0433\u043e\u0432\u043e\u0440\u0438\u0442\u044c \u043f\u043e-\u043a\u0438\u0442\u0430\u0439\u0441\u043a\u0438<br>\u062f\u0639\u0648\u0646\u0627 \u0646\u062a\u062d\u062f\u062b \u0627\u0644\u0635\u064a\u0646\u064a\u0629<br>Hablemos chino<br>Vamos falar chin\xeas<br>Lass uns Chinesisch sprechen<br>Parliamo in cinese<br>\u79c1\u305f\u3061\u306f\u4e2d\u56fd\u8a9e\u3092\u8a71\u3057\u307e\u3057\u3087\u3046"', null, 'male', 'WangJianGuo', 1, '0.022417916000000003', '王建国');
 
 -- ----------------------------
 -- 3、岗位信息表
@@ -1089,3 +1091,100 @@ RETURN pg_catalog.array_to_string(tokens[indexnum:length], $2);
 END IF;
 END;
 $$ IMMUTABLE STRICT LANGUAGE PLPGSQL;
+
+-- ----------------------------
+-- 20、联盟信息表
+-- ----------------------------
+drop table if exists eve_alliance;
+create table eve_alliance (
+    alliance_id bigint not null,
+    name varchar(100) not null,
+    ticker varchar(20) not null,
+    executor_corporation_id bigint default null,
+    creator_corporation_id bigint default null,
+    creator_id bigint default null,
+    date_founded timestamp(0),
+    faction_id bigint default null,
+    icon varchar(255) default '',
+    status char(1) default '0',
+    create_by varchar(64) default '',
+    create_time timestamp(0),
+    update_by varchar(64) default '',
+    update_time timestamp(0),
+    remark varchar(500) default null,
+    primary key (alliance_id)
+);
+
+comment on table  eve_alliance is '联盟信息表';
+comment on column eve_alliance.alliance_id is '联盟ID';
+comment on column eve_alliance.name is '联盟名称';
+comment on column eve_alliance.ticker is '联盟简称';
+comment on column eve_alliance.executor_corporation_id is '执行军团ID';
+comment on column eve_alliance.creator_corporation_id is '创建军团ID';
+comment on column eve_alliance.creator_id is '创建者ID';
+comment on column eve_alliance.date_founded is '创立时间';
+comment on column eve_alliance.faction_id is '阵营ID';
+comment on column eve_alliance.icon is '联盟图标URL';
+comment on column eve_alliance.status is '状态（0正常 1停用）';
+comment on column eve_alliance.create_by is '创建者';
+comment on column eve_alliance.create_time is '创建时间';
+comment on column eve_alliance.update_by is '更新者';
+comment on column eve_alliance.update_time is '更新时间';
+comment on column eve_alliance.remark is '备注';
+
+
+-- ----------------------------
+-- 21、军团信息表
+-- ----------------------------
+drop table if exists eve_corporation;
+create table eve_corporation (
+    corporation_id bigint not null,
+    alliance_id bigint default null,
+    name varchar(100) not null,
+    ticker varchar(20) not null,
+    ceo_id bigint not null,
+    creator_id bigint default null,
+    member_count int4 default 0,
+    tax_rate double precision default 0,
+    date_founded timestamp(0),
+    description text default null,
+    home_station_id bigint default null,
+    faction_id bigint default null,
+    shares bigint default null,
+    url varchar(255) default '',
+    war_eligible boolean default true,
+    icon varchar(255) default '',
+    is_authorized char(1) default '0',
+    status char(1) default '0',
+    create_by varchar(64) default '',
+    create_time timestamp(0),
+    update_by varchar(64) default '',
+    update_time timestamp(0),
+    remark varchar(500) default null,
+    primary key (corporation_id)
+);
+
+comment on table  eve_corporation is '军团信息表';
+comment on column eve_corporation.corporation_id is '军团ID';
+comment on column eve_corporation.alliance_id is '所属联盟ID';
+comment on column eve_corporation.name is '军团名称';
+comment on column eve_corporation.ticker is '军团简称';
+comment on column eve_corporation.ceo_id is 'CEO ID';
+comment on column eve_corporation.creator_id is '创建者ID';
+comment on column eve_corporation.member_count is '成员数量';
+comment on column eve_corporation.tax_rate is '税率';
+comment on column eve_corporation.date_founded is '创立时间';
+comment on column eve_corporation.description is '军团描述';
+comment on column eve_corporation.home_station_id is '总部空间站ID';
+comment on column eve_corporation.faction_id is '阵营ID';
+comment on column eve_corporation.shares is '股份数量';
+comment on column eve_corporation.url is '军团官网';
+comment on column eve_corporation.war_eligible is '是否可被宣战';
+comment on column eve_corporation.icon is '军团图标URL';
+comment on column eve_corporation.is_authorized is '是否已授权（0否 1是）';
+comment on column eve_corporation.status is '状态（0正常 1停用）';
+comment on column eve_corporation.create_by is '创建者';
+comment on column eve_corporation.create_time is '创建时间';
+comment on column eve_corporation.update_by is '更新者';
+comment on column eve_corporation.update_time is '更新时间';
+comment on column eve_corporation.remark is '备注';
