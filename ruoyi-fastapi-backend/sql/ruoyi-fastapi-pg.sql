@@ -292,6 +292,8 @@ insert into sys_menu values(100,  '用户管理', 1,   '1', 'user',       'syste
 insert into sys_menu values(101,  '角色管理', 1,   '2', 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', current_timestamp, '', null, '角色管理菜单');
 insert into sys_menu values(102,  '菜单管理', 1,   '3', 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', current_timestamp, '', null, '菜单管理菜单');
 insert into sys_menu values(103,  '部门管理', 1,   '4', 'dept',       'system/dept/index',        '', '', 1, 0, 'C', '0', '0', 'system:dept:list',        'tree',          'admin', current_timestamp, '', null, '部门管理菜单');
+-- EVE 组织管理菜单（前端入口 + 权限）
+insert into sys_menu values(118,  'EVE组织管理', 1,   '10', 'eve-entity',  'eve/entity/index',       '', '', 1, 0, 'C', '0', '0', 'eve:entity:list',        'share',         'admin', current_timestamp, '', null, 'EVE 组织管理菜单');
 insert into sys_menu values(104,  '岗位管理', 1,   '5', 'post',       'system/post/index',        '', '', 1, 0, 'C', '0', '0', 'system:post:list',        'post',          'admin', current_timestamp, '', null, '岗位管理菜单');
 insert into sys_menu values(105,  '字典管理', 1,   '6', 'dict',       'system/dict/index',        '', '', 1, 0, 'C', '0', '0', 'system:dict:list',        'dict',          'admin', current_timestamp, '', null, '字典管理菜单');
 insert into sys_menu values(106,  '参数设置', 1,   '7', 'config',     'system/config/index',      '', '', 1, 0, 'C', '0', '0', 'system:config:list',      'edit',          'admin', current_timestamp, '', null, '参数设置菜单');
@@ -333,6 +335,11 @@ insert into sys_menu values(1016, '部门查询', 103, '1',  '', '', '', '', 1, 
 insert into sys_menu values(1017, '部门新增', 103, '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:add',            '#', 'admin', current_timestamp, '', null, '');
 insert into sys_menu values(1018, '部门修改', 103, '3',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:edit',           '#', 'admin', current_timestamp, '', null, '');
 insert into sys_menu values(1019, '部门删除', 103, '4',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:remove',         '#', 'admin', current_timestamp, '', null, '');
+-- EVE 组织管理按钮权限
+insert into sys_menu values(1180, '组织查询', 118, '1',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:query',           '#', 'admin', current_timestamp, '', null, '');
+insert into sys_menu values(1181, '组织新增', 118, '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:add',             '#', 'admin', current_timestamp, '', null, '');
+insert into sys_menu values(1182, '组织修改', 118, '3',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:edit',            '#', 'admin', current_timestamp, '', null, '');
+insert into sys_menu values(1183, '组织删除', 118, '4',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:remove',          '#', 'admin', current_timestamp, '', null, '');
 -- 岗位管理按钮
 insert into sys_menu values(1020, '岗位查询', 104, '1',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:post:query',          '#', 'admin', current_timestamp, '', null, '');
 insert into sys_menu values(1021, '岗位新增', 104, '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:post:add',            '#', 'admin', current_timestamp, '', null, '');
@@ -441,6 +448,7 @@ insert into sys_role_menu values (2, 114);
 insert into sys_role_menu values (2, 115);
 insert into sys_role_menu values (2, 116);
 insert into sys_role_menu values (2, 117);
+insert into sys_role_menu values (2, 118);
 insert into sys_role_menu values (2, 500);
 insert into sys_role_menu values (2, 501);
 insert into sys_role_menu values (2, 1000);
@@ -463,6 +471,10 @@ insert into sys_role_menu values (2, 1016);
 insert into sys_role_menu values (2, 1017);
 insert into sys_role_menu values (2, 1018);
 insert into sys_role_menu values (2, 1019);
+insert into sys_role_menu values (2, 1180);
+insert into sys_role_menu values (2, 1181);
+insert into sys_role_menu values (2, 1182);
+insert into sys_role_menu values (2, 1183);
 insert into sys_role_menu values (2, 1020);
 insert into sys_role_menu values (2, 1021);
 insert into sys_role_menu values (2, 1022);
@@ -1093,98 +1105,50 @@ END;
 $$ IMMUTABLE STRICT LANGUAGE PLPGSQL;
 
 -- ----------------------------
--- 20、联盟信息表
+-- 20、EVE 组织架构表（合并联盟与军团）
 -- ----------------------------
-drop table if exists eve_alliance;
-create table eve_alliance (
-    alliance_id bigint not null,
-    name varchar(100) not null,
-    ticker varchar(20) not null,
-    executor_corporation_id bigint default null,
-    creator_corporation_id bigint default null,
-    creator_id bigint default null,
-    date_founded timestamp(0),
-    faction_id bigint default null,
-    icon varchar(255) default '',
-    status char(1) default '0',
-    create_by varchar(64) default '',
-    create_time timestamp(0),
-    update_by varchar(64) default '',
+DROP TABLE IF EXISTS eve_entity;
+CREATE TABLE eve_entity (
+    entity_id bigint NOT NULL,             -- ESI 返回的 Alliance ID 或 Corp ID
+    parent_id bigint DEFAULT 0,            -- 父级ID：联盟为0，军团为其所属联盟ID
+    ancestors varchar(100) DEFAULT '',     -- 祖级列表：参照若依 sys_dept 逻辑 (例如 "0,135456")
+    entity_name varchar(100) NOT NULL,     -- 名称 (Alliance/Corp Name)
+    ticker varchar(20) NOT NULL,           -- 简称
+    entity_type char(1) NOT NULL,          -- 类型：1=联盟, 2=军团
+    is_authorized char(1) DEFAULT '0',     -- 是否授权：0=否, 1=是
+    
+    -- 核心业务字段 (部分字段根据类型填充)
+    ceo_id bigint,                         -- CEO ID (军团) 或 执行官 ID (联盟)
+    executor_corp_id bigint,               -- 执行军团ID (联盟特有)
+    creator_id bigint,                     -- 创建者ID
+    member_count int4 DEFAULT 0,           -- 成员数量 (军团特有)
+    tax_rate double precision DEFAULT 0,   -- 税率 (军团特有)
+    date_founded timestamp(0),             -- 创立时间
+    faction_id bigint,                     -- 阵营ID
+    icon varchar(255) DEFAULT '',          -- 图标URL
+    
+    -- 扩展业务字段
+    home_station_id bigint,                -- 总部空间站 (军团特有)
+    url varchar(255) DEFAULT '',           -- 官网地址
+    war_eligible boolean DEFAULT true,     -- 是否可被宣战 (军团特有)
+    
+    -- 若依标准管理字段
+    order_num int4 DEFAULT 0,              -- 显示顺序
+    status char(1) DEFAULT '0',            -- 状态 (0正常 1停用)
+    del_flag char(1) DEFAULT '0',          -- 删除标志 (0代表存在 2代表删除)
+    create_by varchar(64) DEFAULT '',
+    create_time timestamp(0) DEFAULT CURRENT_TIMESTAMP,
+    update_by varchar(64) DEFAULT '',
     update_time timestamp(0),
-    remark varchar(500) default null,
-    primary key (alliance_id)
+    remark varchar(500) DEFAULT NULL,
+    PRIMARY KEY (entity_id)
 );
 
-comment on table  eve_alliance is '联盟信息表';
-comment on column eve_alliance.alliance_id is '联盟ID';
-comment on column eve_alliance.name is '联盟名称';
-comment on column eve_alliance.ticker is '联盟简称';
-comment on column eve_alliance.executor_corporation_id is '执行军团ID';
-comment on column eve_alliance.creator_corporation_id is '创建军团ID';
-comment on column eve_alliance.creator_id is '创建者ID';
-comment on column eve_alliance.date_founded is '创立时间';
-comment on column eve_alliance.faction_id is '阵营ID';
-comment on column eve_alliance.icon is '联盟图标URL';
-comment on column eve_alliance.status is '状态（0正常 1停用）';
-comment on column eve_alliance.create_by is '创建者';
-comment on column eve_alliance.create_time is '创建时间';
-comment on column eve_alliance.update_by is '更新者';
-comment on column eve_alliance.update_time is '更新时间';
-comment on column eve_alliance.remark is '备注';
-
-
--- ----------------------------
--- 21、军团信息表
--- ----------------------------
-drop table if exists eve_corporation;
-create table eve_corporation (
-    corporation_id bigint not null,
-    alliance_id bigint default null,
-    name varchar(100) not null,
-    ticker varchar(20) not null,
-    ceo_id bigint not null,
-    creator_id bigint default null,
-    member_count int4 default 0,
-    tax_rate double precision default 0,
-    date_founded timestamp(0),
-    description text default null,
-    home_station_id bigint default null,
-    faction_id bigint default null,
-    shares bigint default null,
-    url varchar(255) default '',
-    war_eligible boolean default true,
-    icon varchar(255) default '',
-    is_authorized char(1) default '0',
-    status char(1) default '0',
-    create_by varchar(64) default '',
-    create_time timestamp(0),
-    update_by varchar(64) default '',
-    update_time timestamp(0),
-    remark varchar(500) default null,
-    primary key (corporation_id)
-);
-
-comment on table  eve_corporation is '军团信息表';
-comment on column eve_corporation.corporation_id is '军团ID';
-comment on column eve_corporation.alliance_id is '所属联盟ID';
-comment on column eve_corporation.name is '军团名称';
-comment on column eve_corporation.ticker is '军团简称';
-comment on column eve_corporation.ceo_id is 'CEO ID';
-comment on column eve_corporation.creator_id is '创建者ID';
-comment on column eve_corporation.member_count is '成员数量';
-comment on column eve_corporation.tax_rate is '税率';
-comment on column eve_corporation.date_founded is '创立时间';
-comment on column eve_corporation.description is '军团描述';
-comment on column eve_corporation.home_station_id is '总部空间站ID';
-comment on column eve_corporation.faction_id is '阵营ID';
-comment on column eve_corporation.shares is '股份数量';
-comment on column eve_corporation.url is '军团官网';
-comment on column eve_corporation.war_eligible is '是否可被宣战';
-comment on column eve_corporation.icon is '军团图标URL';
-comment on column eve_corporation.is_authorized is '是否已授权（0否 1是）';
-comment on column eve_corporation.status is '状态（0正常 1停用）';
-comment on column eve_corporation.create_by is '创建者';
-comment on column eve_corporation.create_time is '创建时间';
-comment on column eve_corporation.update_by is '更新者';
-comment on column eve_corporation.update_time is '更新时间';
-comment on column eve_corporation.remark is '备注';
+-- 添加注释方便 Navicat 查看
+COMMENT ON TABLE  eve_entity IS 'EVE 组织架构表 (合并联盟与军团)';
+COMMENT ON COLUMN eve_entity.entity_id IS '实体ID (ESI ID)';
+COMMENT ON COLUMN eve_entity.parent_id IS '父级ID (联盟为0)';
+COMMENT ON COLUMN eve_entity.ancestors IS '祖级列表';
+COMMENT ON COLUMN eve_entity.entity_type IS '类型 (1联盟 2军团)';
+COMMENT ON COLUMN eve_entity.is_authorized IS '授权状态 (0未授权 1已授权)';
+COMMENT ON COLUMN eve_entity.status IS '状态 (0正常 1停用)';

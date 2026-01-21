@@ -5,13 +5,13 @@
         :horizontal="appStore.device === 'mobile'"
         class="default-theme"
       >
-        <!--部门数据-->
+        <!--组织数据-->
         <pane size="16">
           <el-col>
             <div class="head-container">
               <el-input
-                v-model="deptName"
-                placeholder="请输入部门名称"
+                v-model="entityName"
+                placeholder="请输入组织名称"
                 clearable
                 prefix-icon="Search"
                 style="margin-bottom: 20px"
@@ -19,12 +19,12 @@
             </div>
             <div class="head-container">
               <el-tree
-                :data="deptOptions"
-                :props="{ label: 'label', children: 'children' }"
+                :data="entityOptions"
+                :props="{ label: 'entityName', children: 'children' }"
                 :expand-on-click-node="false"
                 :filter-node-method="filterNode"
-                ref="deptTreeRef"
-                node-key="id"
+                ref="entityTreeRef"
+                node-key="entityId"
                 highlight-current
                 default-expand-all
                 @node-click="handleNodeClick"
@@ -94,15 +94,16 @@
             </el-form>
 
             <el-row :gutter="10" class="mb8">
-              <el-col :span="1.5">
-                <el-button
-                  type="primary"
-                  plain
-                  icon="Plus"
-                  @click="handleAdd"
-                  v-hasPermi="['system:user:add']"
-                  >新增</el-button
-                >
+              <el-col :span="6">
+                <el-form-item label="组织名称" prop="entityName">
+                  <el-input
+                    v-model="queryParams.entityName"
+                    placeholder="请输入组织名称"
+                    clearable
+                    style="width: 240px"
+                    @keyup.enter.native="handleQuery"
+                  />
+                </el-form-item>
               </el-col>
               <el-col :span="1.5">
                 <el-button
@@ -183,13 +184,19 @@
                 :show-overflow-tooltip="true"
               />
               <el-table-column
-                label="部门"
+                label="所属组织"
                 align="center"
-                key="deptName"
-                prop="dept.deptName"
-                v-if="columns.deptName.visible"
+                key="entityName"
+                v-if="columns.entityName.visible"
                 :show-overflow-tooltip="true"
-              />
+              >
+                <template #default="scope">
+                  <span>
+                    {{ scope.row.entity?.entityName }}
+                    <span v-if="scope.row.entity?.ticker"> [{{ scope.row.entity.ticker }}]</span>
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="手机号码"
                 align="center"
@@ -312,13 +319,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
+            <el-form-item label="所属组织" prop="corporationId">
               <el-tree-select
-                v-model="form.deptId"
-                :data="enabledDeptOptions"
-                :props="{ value: 'id', label: 'label', children: 'children' }"
-                value-key="id"
-                placeholder="请选择归属部门"
+                v-model="form.corporationId"
+                :data="enabledEntityOptions"
+                :props="{ value: 'entityId', label: 'entityName', children: 'children' }"
+                value-key="entityId"
+                placeholder="请选择所属组织"
                 clearable
                 check-strictly
               />
@@ -511,8 +518,8 @@ import {
   getUser,
   updateUser,
   addUser,
-  deptTreeSelect,
 } from "@/api/system/user";
+import { listEntity } from "@/api/eve/entity";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 
@@ -534,9 +541,9 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
 const dateRange = ref([]);
-const deptName = ref("");
-const deptOptions = ref(undefined);
-const enabledDeptOptions = ref(undefined);
+const entityName = ref("");
+const entityOptions = ref([]);
+const enabledEntityOptions = ref([]);
 const initPassword = ref(undefined);
 const postOptions = ref([]);
 const roleOptions = ref([]);
@@ -561,7 +568,7 @@ const columns = ref({
   userId: { label: "用户编号", visible: true },
   userName: { label: "用户名称", visible: true },
   nickName: { label: "用户昵称", visible: true },
-  deptName: { label: "部门", visible: true },
+  entityName: { label: "组织", visible: true },
   phonenumber: { label: "手机号码", visible: true },
   status: { label: "状态", visible: true },
   createTime: { label: "创建时间", visible: true },
@@ -575,7 +582,8 @@ const data = reactive({
     userName: undefined,
     phonenumber: undefined,
     status: undefined,
-    deptId: undefined,
+    corporationId: undefined,
+    entityName: undefined,
   },
   rules: {
     userName: [
@@ -626,11 +634,11 @@ const { queryParams, form, rules } = toRefs(data);
 /** 通过条件过滤节点  */
 const filterNode = (value, data) => {
   if (!value) return true;
-  return data.label.indexOf(value) !== -1;
+  return (data.entityName || "").indexOf(value) !== -1;
 };
-/** 根据名称筛选部门树 */
-watch(deptName, (val) => {
-  proxy.$refs["deptTreeRef"].filter(val);
+/** 根据名称筛选组织树 */
+watch(entityName, (val) => {
+  proxy.$refs["entityTreeRef"].filter(val);
 });
 /** 查询用户列表 */
 function getList() {
@@ -643,30 +651,31 @@ function getList() {
     }
   );
 }
-/** 查询部门下拉树结构 */
-function getDeptTree() {
-  deptTreeSelect().then((response) => {
-    deptOptions.value = response.data;
-    enabledDeptOptions.value = filterDisabledDept(
-      JSON.parse(JSON.stringify(response.data))
+/** 查询组织树结构 */
+function getEntityTree() {
+  listEntity().then((response) => {
+    const tree = proxy.handleTree(response.data, "entityId");
+    entityOptions.value = tree;
+    enabledEntityOptions.value = filterDisabledEntity(
+      JSON.parse(JSON.stringify(tree))
     );
   });
 }
-/** 过滤禁用的部门 */
-function filterDisabledDept(deptList) {
-  return deptList.filter((dept) => {
-    if (dept.disabled) {
+/** 过滤禁用的组织 */
+function filterDisabledEntity(entityList) {
+  return entityList.filter((entity) => {
+    if (entity.status === "1") {
       return false;
     }
-    if (dept.children && dept.children.length) {
-      dept.children = filterDisabledDept(dept.children);
+    if (entity.children && entity.children.length) {
+      entity.children = filterDisabledEntity(entity.children);
     }
     return true;
   });
 }
 /** 节点单击事件 */
 function handleNodeClick(data) {
-  queryParams.value.deptId = data.id;
+  queryParams.value.corporationId = data.entityId;
   handleQuery();
 }
 /** 搜索按钮操作 */
@@ -678,8 +687,10 @@ function handleQuery() {
 function resetQuery() {
   dateRange.value = [];
   proxy.resetForm("queryRef");
-  queryParams.value.deptId = undefined;
-  proxy.$refs.deptTreeRef.setCurrentKey(null);
+  queryParams.value.corporationId = undefined;
+  entityName.value = "";
+  proxy.$refs.entityTreeRef.setCurrentKey(null);
+  proxy.$refs.entityTreeRef.filter("");
   handleQuery();
 }
 /** 删除按钮操作 */
@@ -825,7 +836,7 @@ function submitFileForm() {
 function reset() {
   form.value = {
     userId: undefined,
-    deptId: undefined,
+    corporationId: undefined,
     userName: undefined,
     nickName: undefined,
     password: undefined,
@@ -892,7 +903,7 @@ function submitForm() {
 }
 
 onMounted(() => {
-  getDeptTree();
+  getEntityTree();
   getList();
   proxy.getConfigKey("sys.user.initPassword").then((response) => {
     initPassword.value = response.msg;

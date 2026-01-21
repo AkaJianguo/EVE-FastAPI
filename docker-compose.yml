@@ -38,6 +38,7 @@ services:
     ports:
       - "${BACKEND_EXTERNAL_PORT}:9099"
     environment:
+      - APP_ENV=dockerpg
       - ENV=dockerpg
       - DB_HOST=ruoyi-pg  # 对应数据库服务名
       - DB_PORT=5432

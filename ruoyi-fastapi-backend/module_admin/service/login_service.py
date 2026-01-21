@@ -274,6 +274,7 @@ class LoginService:
                     postIds=post_ids,
                     roleIds=role_ids,
                     dept=CamelCaseUtil.transform_result(query_user.get('user_dept_info')),
+                    entity=CamelCaseUtil.transform_result(query_user.get('user_entity_info')),
                     role=CamelCaseUtil.transform_result(query_user.get('user_role_info')),
                 ),
                 isDefaultModifyPwd=is_default_modify_pwd,
@@ -590,13 +591,11 @@ class LoginService:
 
             corporation_id = character_profile.get('corporation_id')
             alliance_id = character_profile.get('alliance_id')
-            sync_tasks = []
+            # 避免同一个 AsyncSession 并发查询导致 asyncpg InterfaceError
             if corporation_id:
-                sync_tasks.append(EveSyncService.sync_corporation(query_db, corporation_id))
-            if alliance_id:
-                sync_tasks.append(EveSyncService.sync_alliance(query_db, alliance_id))
-            if sync_tasks:
-                await asyncio.gather(*sync_tasks)
+                await EveSyncService.sync_corporation(query_db, corporation_id)
+            elif alliance_id:
+                await EveSyncService.sync_alliance(query_db, alliance_id)
 
             def _parse_birthday(raw: Any) -> Optional[datetime]:
                 if not raw:
@@ -699,7 +698,6 @@ class LoginService:
                         birthday=_parse_birthday(character_profile.get('birthday')),
                         bloodlineId=character_profile.get('bloodline_id'),
                         corporationId=character_profile.get('corporation_id'),
-                        allianceId=character_profile.get('alliance_id'),
                         description=character_profile.get('description'),
                         factionId=character_profile.get('faction_id'),
                         gender=character_profile.get('gender'),
@@ -734,9 +732,10 @@ class LoginService:
 
             role_id_list = [item.role_id for item in user_info.get('user_role_info')]
             is_admin_user = 1 in role_id_list or user_basic.user_id in {1, 100}
-            corp_authorized = await EveSyncService.check_corp_authorized(query_db, user_basic.corporation_id)
-            if not corp_authorized and not is_admin_user:
-                raise ServiceException(message='您的军团尚未获得授权，请联系管理员', data=None, code=HttpStatusConstant.FORBIDDEN)
+            # 临时注释军团授权校验，后续恢复时取消注释
+            # corp_authorized = await EveSyncService.check_corp_authorized(query_db, user_basic.corporation_id)
+            # if not corp_authorized and not is_admin_user:
+            #     raise ServiceException(message='您的军团尚未获得授权，请联系管理员', data=None, code=HttpStatusConstant.FORBIDDEN)
 
             access_token_expires = timedelta(minutes=JwtConfig.jwt_expire_minutes)
             session_id = str(uuid.uuid4())

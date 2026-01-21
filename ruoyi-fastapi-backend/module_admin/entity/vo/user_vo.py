@@ -8,6 +8,7 @@ from pydantic_validation_decorator import Network, NotBlank, Size, Xss
 
 from exceptions.exception import ModelValidatorException
 from module_admin.entity.vo.dept_vo import DeptModel
+from module_admin.entity.vo.eve_entity_vo import EveEntityModel
 from module_admin.entity.vo.post_vo import PostModel
 from module_admin.entity.vo.role_vo import RoleModel
 
@@ -107,6 +108,7 @@ class UserRowModel(UserModel):
     """
 
     dept: Optional[DeptModel] = Field(default=None, description='部门信息')
+    entity: Optional[EveEntityModel] = Field(default=None, description='EVE组织信息')
 
 
 class UserRoleModel(BaseModel):
@@ -135,6 +137,7 @@ class UserInfoModel(UserModel):
     post_ids: Optional[Union[str, None]] = Field(default=None, description='岗位ID信息')
     role_ids: Optional[Union[str, None]] = Field(default=None, description='角色ID信息')
     dept: Optional[Union[DeptModel, None]] = Field(default=None, description='部门信息')
+    entity: Optional[Union[EveEntityModel, None]] = Field(default=None, description='EVE组织信息')
     role: Optional[list[Union[RoleModel, None]]] = Field(default=[], description='角色信息')
 
 
@@ -200,6 +203,7 @@ class UserPageQueryModel(UserQueryModel):
 
     page_num: int = Field(default=1, description='当前页码')
     page_size: int = Field(default=10, description='每页记录数')
+    corporation_id: Optional[int] = Field(default=None, description='EVE组织ID')
 
 
 class AddUserModel(UserModel):

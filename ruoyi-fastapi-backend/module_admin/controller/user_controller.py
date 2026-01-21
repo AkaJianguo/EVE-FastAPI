@@ -18,9 +18,10 @@ from common.enums import BusinessType
 from common.router import APIRouterPro
 from common.vo import DataResponseModel, DynamicResponseModel, PageResponseModel, ResponseBaseModel
 from config.env import UploadConfig
+from module_admin.entity.do.eve_do import EveEntity
 from module_admin.entity.do.dept_do import SysDept
 from module_admin.entity.do.user_do import SysUser
-from module_admin.entity.vo.dept_vo import DeptModel, DeptTreeModel
+from module_admin.entity.vo.eve_entity_vo import EveEntityModel, EveEntityTreeModel
 from module_admin.entity.vo.user_vo import (
     AddUserModel,
     AvatarModel,
@@ -39,7 +40,7 @@ from module_admin.entity.vo.user_vo import (
     UserRoleResponseModel,
     UserRowModel,
 )
-from module_admin.service.dept_service import DeptService
+from module_admin.service.eve_entity_service import EveEntityService
 from module_admin.service.role_service import RoleService
 from module_admin.service.user_service import UserService
 from utils.common_util import bytes2file_response
@@ -55,20 +56,20 @@ user_controller = APIRouterPro(
 
 @user_controller.get(
     '/deptTree',
-    summary='获取部门树接口',
-    description='用于获取当前登录用户可见的部门树',
-    response_model=DataResponseModel[list[DeptTreeModel]],
+    summary='获取组织树接口',
+    description='用于获取当前登录用户可见的联盟/军团组织树',
+    response_model=DataResponseModel[list[EveEntityTreeModel]],
     dependencies=[UserInterfaceAuthDependency('system:user:list')],
 )
-async def get_system_dept_tree(
+async def get_system_entity_tree(
     request: Request,
     query_db: Annotated[AsyncSession, DBSessionDependency()],
-    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysDept)],
+    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
 ) -> Response:
-    dept_query_result = await DeptService.get_dept_tree_services(query_db, DeptModel(), data_scope_sql)
+    entity_query_result = await EveEntityService.get_entity_tree_services(query_db, EveEntityModel(), data_scope_sql)
     logger.info('获取成功')
 
-    return ResponseUtil.success(data=dept_query_result)
+    return ResponseUtil.success(data=entity_query_result)
 
 
 @user_controller.get(
@@ -82,7 +83,7 @@ async def get_system_user_list(
     request: Request,
     user_page_query: Annotated[UserPageQueryModel, Query()],
     query_db: Annotated[AsyncSession, DBSessionDependency()],
-    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysUser)],
+    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
 ) -> Response:
     # 获取分页数据
     user_page_query_result = await UserService.get_user_list_services(
@@ -107,11 +108,17 @@ async def add_system_user(
     add_user: AddUserModel,
     query_db: Annotated[AsyncSession, DBSessionDependency()],
     current_user: Annotated[CurrentUserModel, CurrentUserDependency()],
-    dept_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysDept)],
-    role_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysDept)],
+    dept_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
+    role_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
 ) -> Response:
     if not current_user.user.admin:
-        await DeptService.check_dept_data_scope_services(query_db, add_user.dept_id, dept_data_scope_sql)
+        # 验证目标组织在数据权限内
+        entity_scope = await EveEntityService.get_entity_list_services(
+            query_db, EveEntityModel(entity_id=add_user.corporation_id), dept_data_scope_sql
+        )
+        if not entity_scope:
+            logger.warning('无权操作该组织下的用户')
+            return ResponseUtil.failure(msg='没有权限操作该组织')
         await RoleService.check_role_data_scope_services(
             query_db, ','.join([str(item) for item in add_user.role_ids]), role_data_scope_sql
         )
@@ -140,14 +147,19 @@ async def edit_system_user(
     edit_user: EditUserModel,
     query_db: Annotated[AsyncSession, DBSessionDependency()],
     current_user: Annotated[CurrentUserModel, CurrentUserDependency()],
-    user_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysUser)],
-    dept_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysDept)],
-    role_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysDept)],
+    user_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
+    dept_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
+    role_data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
 ) -> Response:
     await UserService.check_user_allowed_services(edit_user)
     if not current_user.user.admin:
         await UserService.check_user_data_scope_services(query_db, edit_user.user_id, user_data_scope_sql)
-        await DeptService.check_dept_data_scope_services(query_db, edit_user.dept_id, dept_data_scope_sql)
+        entity_scope = await EveEntityService.get_entity_list_services(
+            query_db, EveEntityModel(entity_id=edit_user.corporation_id), dept_data_scope_sql
+        )
+        if not entity_scope:
+            logger.warning('无权操作该组织下的用户')
+            return ResponseUtil.failure(msg='没有权限操作该组织')
         await RoleService.check_role_data_scope_services(
             query_db, ','.join([str(item) for item in edit_user.role_ids]), role_data_scope_sql
         )
@@ -172,7 +184,7 @@ async def delete_system_user(
     user_ids: Annotated[str, Path(description='需要删除的用户ID')],
     query_db: Annotated[AsyncSession, DBSessionDependency()],
     current_user: Annotated[CurrentUserModel, CurrentUserDependency()],
-    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(SysUser)],
+    data_scope_sql: Annotated[ColumnElement, DataScopeDependency(EveEntity)],
 ) -> Response:
     user_id_list = user_ids.split(',') if user_ids else []
     if user_id_list:

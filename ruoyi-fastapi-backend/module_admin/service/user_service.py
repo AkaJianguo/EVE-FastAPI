@@ -68,13 +68,13 @@ class UserService:
             user_list_result = PageModel[UserRowModel](
                 **{
                     **query_result.model_dump(by_alias=True),
-                    'rows': [{**row[0], 'dept': row[1]} for row in query_result.rows],
+                    'rows': [{**row[0], 'entity': row[1]} for row in query_result.rows],
                 }
             )
         else:
             user_list_result = []
             if query_result:
-                user_list_result = [{**row[0], 'dept': row[1]} for row in query_result]
+                user_list_result = [{**row[0], 'entity': row[1]} for row in query_result]
 
         return user_list_result
 
@@ -295,6 +295,7 @@ class UserService:
                     postIds=post_ids,
                     roleIds=role_ids,
                     dept=CamelCaseUtil.transform_result(query_user.get('user_dept_info')),
+                    entity=CamelCaseUtil.transform_result(query_user.get('user_entity_info')),
                     role=CamelCaseUtil.transform_result(query_user.get('user_role_info')),
                 ),
                 postIds=post_ids_list,
@@ -326,6 +327,7 @@ class UserService:
                 postIds=post_ids,
                 roleIds=role_ids,
                 dept=CamelCaseUtil.transform_result(query_user.get('user_dept_info')),
+                entity=CamelCaseUtil.transform_result(query_user.get('user_entity_info')),
                 role=CamelCaseUtil.transform_result(query_user.get('user_role_info')),
             ),
             postGroup=post_group,
@@ -567,6 +569,7 @@ class UserService:
             postIds=post_ids,
             roleIds=role_ids,
             dept=CamelCaseUtil.transform_result(query_user.get('user_dept_info')),
+            entity=CamelCaseUtil.transform_result(query_user.get('user_entity_info')),
             role=CamelCaseUtil.transform_result(query_user.get('user_role_info')),
         )
         query_role_list = [

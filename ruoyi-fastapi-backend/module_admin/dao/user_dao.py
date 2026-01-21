@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from common.vo import PageModel
 from module_admin.entity.do.dept_do import SysDept
+from module_admin.entity.do.eve_do import EveEntity
 from module_admin.entity.do.menu_do import SysMenu
 from module_admin.entity.do.post_do import SysPost
 from module_admin.entity.do.role_do import SysRole, SysRoleMenu
@@ -128,15 +129,20 @@ class UserDao:
             .scalars()
             .first()
         )
-        query_user_dept_info = (
+        query_user_entity_info = (
             (
                 await db.execute(
-                    select(SysDept)
+                    select(EveEntity)
                     .select_from(SysUser)
                     .where(SysUser.status == '0', SysUser.del_flag == '0', SysUser.user_id == user_id)
                     .join(
-                        SysDept,
-                        and_(SysUser.dept_id == SysDept.dept_id, SysDept.status == '0', SysDept.del_flag == '0'),
+                        EveEntity,
+                        and_(
+                            SysUser.corporation_id == EveEntity.entity_id,
+                            EveEntity.status == '0',
+                            EveEntity.del_flag == '0',
+                        ),
+                        isouter=True,
                     )
                     .distinct()
                 )
@@ -208,7 +214,7 @@ class UserDao:
 
         results = {
             'user_basic_info': query_user_basic_info,
-            'user_dept_info': query_user_dept_info,
+            'user_entity_info': query_user_entity_info,
             'user_role_info': query_user_role_info,
             'user_post_info': query_user_post_info,
             'user_menu_info': query_user_menu_info,
@@ -230,15 +236,20 @@ class UserDao:
             .scalars()
             .first()
         )
-        query_user_dept_info = (
+        query_user_entity_info = (
             (
                 await db.execute(
-                    select(SysDept)
+                    select(EveEntity)
                     .select_from(SysUser)
                     .where(SysUser.del_flag == '0', SysUser.user_id == user_id)
                     .join(
-                        SysDept,
-                        and_(SysUser.dept_id == SysDept.dept_id, SysDept.status == '0', SysDept.del_flag == '0'),
+                        EveEntity,
+                        and_(
+                            SysUser.corporation_id == EveEntity.entity_id,
+                            EveEntity.status == '0',
+                            EveEntity.del_flag == '0',
+                        ),
+                        isouter=True,
                     )
                     .distinct()
                 )
@@ -299,7 +310,7 @@ class UserDao:
         )
         results = {
             'user_basic_info': query_user_basic_info,
-            'user_dept_info': query_user_dept_info,
+            'user_entity_info': query_user_entity_info,
             'user_role_info': query_user_role_info,
             'user_post_info': query_user_post_info,
             'user_menu_info': query_user_menu_info,
@@ -321,16 +332,17 @@ class UserDao:
         :return: 用户列表信息对象
         """
         query = (
-            select(SysUser, SysDept)
+            select(SysUser, EveEntity)
             .where(
                 SysUser.del_flag == '0',
                 or_(
-                    SysUser.dept_id == query_object.dept_id,
-                    SysUser.dept_id.in_(
-                        select(SysDept.dept_id).where(func.find_in_set(query_object.dept_id, SysDept.ancestors))
-                    ),
+                    EveEntity.entity_id == query_object.corporation_id,
+                    EveEntity.ancestors.like(f'%,{query_object.corporation_id},%'),
+                    EveEntity.ancestors.like(f'{query_object.corporation_id},%'),
+                    EveEntity.ancestors.like(f'%,{query_object.corporation_id}'),
+                    EveEntity.ancestors == str(query_object.corporation_id),
                 )
-                if query_object.dept_id
+                if query_object.corporation_id
                 else True,
                 SysUser.user_id == query_object.user_id if query_object.user_id is not None else True,
                 SysUser.user_name.like(f'%{query_object.user_name}%') if query_object.user_name else True,
@@ -348,8 +360,12 @@ class UserDao:
                 data_scope_sql,
             )
             .join(
-                SysDept,
-                and_(SysUser.dept_id == SysDept.dept_id, SysDept.status == '0', SysDept.del_flag == '0'),
+                EveEntity,
+                and_(
+                    SysUser.corporation_id == EveEntity.entity_id,
+                    EveEntity.status == '0',
+                    EveEntity.del_flag == '0',
+                ),
                 isouter=True,
             )
             .order_by(SysUser.user_id)

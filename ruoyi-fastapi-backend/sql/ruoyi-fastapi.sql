@@ -195,6 +195,8 @@ insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       's
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, '角色管理菜单');
 insert into sys_menu values('102',  '菜单管理', '1',   '3', 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, '菜单管理菜单');
 insert into sys_menu values('103',  '部门管理', '1',   '4', 'dept',       'system/dept/index',        '', '', 1, 0, 'C', '0', '0', 'system:dept:list',        'tree',          'admin', sysdate(), '', null, '部门管理菜单');
+-- EVE 组织管理菜单（前端入口 + 权限）
+insert into sys_menu values('118',  'EVE组织管理', '1',   '10', 'eve-entity',  'eve/entity/index',       '', '', 1, 0, 'C', '0', '0', 'eve:entity:list',        'share',         'admin', sysdate(), '', null, 'EVE 组织管理菜单');
 insert into sys_menu values('104',  '岗位管理', '1',   '5', 'post',       'system/post/index',        '', '', 1, 0, 'C', '0', '0', 'system:post:list',        'post',          'admin', sysdate(), '', null, '岗位管理菜单');
 insert into sys_menu values('105',  '字典管理', '1',   '6', 'dict',       'system/dict/index',        '', '', 1, 0, 'C', '0', '0', 'system:dict:list',        'dict',          'admin', sysdate(), '', null, '字典管理菜单');
 insert into sys_menu values('106',  '参数设置', '1',   '7', 'config',     'system/config/index',      '', '', 1, 0, 'C', '0', '0', 'system:config:list',      'edit',          'admin', sysdate(), '', null, '参数设置菜单');
@@ -236,6 +238,11 @@ insert into sys_menu values('1016', '部门查询', '103', '1',  '', '', '', '',
 insert into sys_menu values('1017', '部门新增', '103', '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:add',            '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1018', '部门修改', '103', '3',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:edit',           '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1019', '部门删除', '103', '4',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:dept:remove',         '#', 'admin', sysdate(), '', null, '');
+-- EVE 组织管理按钮权限
+insert into sys_menu values('1180', '组织查询', '118', '1',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:query',           '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1181', '组织新增', '118', '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:add',             '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1182', '组织修改', '118', '3',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:edit',            '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('1183', '组织删除', '118', '4',  '', '', '', '', 1, 0, 'F', '0', '0', 'eve:entity:remove',          '#', 'admin', sysdate(), '', null, '');
 -- 岗位管理按钮
 insert into sys_menu values('1020', '岗位查询', '104', '1',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:post:query',          '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1021', '岗位新增', '104', '2',  '', '', '', '', 1, 0, 'F', '0', '0', 'system:post:add',            '#', 'admin', sysdate(), '', null, '');
@@ -340,6 +347,7 @@ insert into sys_role_menu values ('2', '114');
 insert into sys_role_menu values ('2', '115');
 insert into sys_role_menu values ('2', '116');
 insert into sys_role_menu values ('2', '117');
+insert into sys_role_menu values ('2', '118');
 insert into sys_role_menu values ('2', '500');
 insert into sys_role_menu values ('2', '501');
 insert into sys_role_menu values ('2', '1000');
@@ -362,6 +370,10 @@ insert into sys_role_menu values ('2', '1016');
 insert into sys_role_menu values ('2', '1017');
 insert into sys_role_menu values ('2', '1018');
 insert into sys_role_menu values ('2', '1019');
+insert into sys_role_menu values ('2', '1180');
+insert into sys_role_menu values ('2', '1181');
+insert into sys_role_menu values ('2', '1182');
+insert into sys_role_menu values ('2', '1183');
 insert into sys_role_menu values ('2', '1020');
 insert into sys_role_menu values ('2', '1021');
 insert into sys_role_menu values ('2', '1022');
