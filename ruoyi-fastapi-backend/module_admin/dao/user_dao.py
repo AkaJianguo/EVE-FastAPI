@@ -89,18 +89,18 @@ class UserDao:
         :param user: 用户参数
         :return: 当前用户参数的用户信息对象
         """
+        conditions = [SysUser.del_flag == '0']
+        if user.user_name:
+            conditions.append(SysUser.user_name == user.user_name)
+        if user.phonenumber:
+            conditions.append(SysUser.phonenumber == user.phonenumber)
+        if user.email:
+            conditions.append(SysUser.email == user.email)
+
         query_user_info = (
             (
                 await db.execute(
-                    select(SysUser)
-                    .where(
-                        SysUser.del_flag == '0',
-                        SysUser.user_name == user.user_name if user.user_name else True,
-                        SysUser.phonenumber == user.phonenumber if user.phonenumber else True,
-                        SysUser.email == user.email if user.email else True,
-                    )
-                    .order_by(desc(SysUser.create_time))
-                    .distinct()
+                    select(SysUser).where(*conditions).order_by(desc(SysUser.create_time)).distinct()
                 )
             )
             .scalars()
@@ -321,7 +321,7 @@ class UserDao:
     @classmethod
     async def get_user_list(
         cls, db: AsyncSession, query_object: UserPageQueryModel, data_scope_sql: ColumnElement, is_page: bool = False
-    ) -> Union[PageModel, list[list[dict[str, Any]]]]:
+    ) -> Union[PageModel, list[Union[dict[str, Any], list[dict[Any, Any]]]]]:
         """
         根据查询参数获取用户列表信息
 
@@ -331,34 +331,43 @@ class UserDao:
         :param is_page: 是否开启分页
         :return: 用户列表信息对象
         """
-        query = (
-            select(SysUser, EveEntity)
-            .where(
-                SysUser.del_flag == '0',
+        conditions = [SysUser.del_flag == '0', data_scope_sql]
+        if query_object.corporation_id:
+            corp_id = query_object.corporation_id
+            conditions.append(
                 or_(
-                    EveEntity.entity_id == query_object.corporation_id,
-                    EveEntity.ancestors.like(f'%,{query_object.corporation_id},%'),
-                    EveEntity.ancestors.like(f'{query_object.corporation_id},%'),
-                    EveEntity.ancestors.like(f'%,{query_object.corporation_id}'),
-                    EveEntity.ancestors == str(query_object.corporation_id),
+                    EveEntity.entity_id == corp_id,
+                    EveEntity.ancestors.like(f'%,{corp_id},%'),
+                    EveEntity.ancestors.like(f'{corp_id},%'),
+                    EveEntity.ancestors.like(f'%,{corp_id}'),
+                    EveEntity.ancestors == str(corp_id),
                 )
-                if query_object.corporation_id
-                else True,
-                SysUser.user_id == query_object.user_id if query_object.user_id is not None else True,
-                SysUser.user_name.like(f'%{query_object.user_name}%') if query_object.user_name else True,
-                SysUser.nick_name.like(f'%{query_object.nick_name}%') if query_object.nick_name else True,
-                SysUser.email.like(f'%{query_object.email}%') if query_object.email else True,
-                SysUser.phonenumber.like(f'%{query_object.phonenumber}%') if query_object.phonenumber else True,
-                SysUser.status == query_object.status if query_object.status else True,
-                SysUser.sex == query_object.sex if query_object.sex else True,
+            )
+        if query_object.user_id is not None:
+            conditions.append(SysUser.user_id == query_object.user_id)
+        if query_object.user_name:
+            conditions.append(SysUser.user_name.like(f'%{query_object.user_name}%'))
+        if query_object.nick_name:
+            conditions.append(SysUser.nick_name.like(f'%{query_object.nick_name}%'))
+        if query_object.email:
+            conditions.append(SysUser.email.like(f'%{query_object.email}%'))
+        if query_object.phonenumber:
+            conditions.append(SysUser.phonenumber.like(f'%{query_object.phonenumber}%'))
+        if query_object.status:
+            conditions.append(SysUser.status == query_object.status)
+        if query_object.sex:
+            conditions.append(SysUser.sex == query_object.sex)
+        if query_object.begin_time and query_object.end_time:
+            conditions.append(
                 SysUser.create_time.between(
-                    datetime.combine(datetime.strptime(query_object.begin_time, '%Y-%m-%d'), time(00, 00, 00)),
+                    datetime.combine(datetime.strptime(query_object.begin_time, '%Y-%m-%d'), time(0, 0, 0)),
                     datetime.combine(datetime.strptime(query_object.end_time, '%Y-%m-%d'), time(23, 59, 59)),
                 )
-                if query_object.begin_time and query_object.end_time
-                else True,
-                data_scope_sql,
             )
+
+        query = (
+            select(SysUser, EveEntity)
+            .where(*conditions)
             .join(
                 EveEntity,
                 and_(
@@ -371,9 +380,7 @@ class UserDao:
             .order_by(SysUser.user_id)
             .distinct()
         )
-        user_list: Union[PageModel, list[list[dict[str, Any]]]] = await PageUtil.paginate(
-            db, query, query_object.page_num, query_object.page_size, is_page
-        )
+        user_list = await PageUtil.paginate(db, query, query_object.page_num, query_object.page_size, is_page)
 
         return user_list
 
@@ -429,21 +436,12 @@ class UserDao:
         :param query_object: 用户角色查询对象
         :return: 用户已分配的角色列表信息
         """
+        conditions = [SysRole.del_flag == '0', SysRole.role_id != 1]
+        conditions.append(SysRole.role_id.in_(select(SysUserRole.role_id).where(SysUserRole.user_id == query_object.user_id)))
+
         allocated_role_list = (
             (
-                await db.execute(
-                    select(SysRole)
-                    .where(
-                        SysRole.del_flag == '0',
-                        SysRole.role_id != 1,
-                        SysRole.role_name == query_object.role_name if query_object.role_name else True,
-                        SysRole.role_key == query_object.role_key if query_object.role_key else True,
-                        SysRole.role_id.in_(
-                            select(SysUserRole.role_id).where(SysUserRole.user_id == query_object.user_id)
-                        ),
-                    )
-                    .distinct()
-                )
+                await db.execute(select(SysRole).where(*conditions).distinct())
             )
             .scalars()
             .all()
@@ -458,7 +456,7 @@ class UserDao:
         query_object: UserRolePageQueryModel,
         data_scope_sql: ColumnElement,
         is_page: bool = False,
-    ) -> Union[PageModel, list[dict[str, Any]]]:
+    ) -> Union[PageModel, list[Union[dict[str, Any], list[dict[Any, Any]]]]]:
         """
         根据角色id获取已分配的用户列表信息
 
@@ -468,23 +466,21 @@ class UserDao:
         :param is_page: 是否开启分页
         :return: 角色已分配的用户列表信息
         """
+        conditions = [SysUser.del_flag == '0', SysRole.role_id == query_object.role_id, data_scope_sql]
+        if query_object.user_name:
+            conditions.append(SysUser.user_name == query_object.user_name)
+        if query_object.phonenumber:
+            conditions.append(SysUser.phonenumber == query_object.phonenumber)
+
         query = (
             select(SysUser)
             .join(SysDept, SysDept.dept_id == SysUser.dept_id, isouter=True)
             .join(SysUserRole, SysUserRole.user_id == SysUser.user_id, isouter=True)
             .join(SysRole, SysRole.role_id == SysUserRole.role_id, isouter=True)
-            .where(
-                SysUser.del_flag == '0',
-                SysUser.user_name == query_object.user_name if query_object.user_name else True,
-                SysUser.phonenumber == query_object.phonenumber if query_object.phonenumber else True,
-                SysRole.role_id == query_object.role_id,
-                data_scope_sql,
-            )
+            .where(*conditions)
             .distinct()
         )
-        allocated_user_list: Union[PageModel, list[dict[str, Any]]] = await PageUtil.paginate(
-            db, query, query_object.page_num, query_object.page_size, is_page
-        )
+        allocated_user_list = await PageUtil.paginate(db, query, query_object.page_num, query_object.page_size, is_page)
 
         return allocated_user_list
 
@@ -495,7 +491,7 @@ class UserDao:
         query_object: UserRolePageQueryModel,
         data_scope_sql: ColumnElement,
         is_page: bool = False,
-    ) -> Union[PageModel, list[dict[str, Any]]]:
+    ) -> Union[PageModel, list[Union[dict[str, Any], list[dict[Any, Any]]]]]:
         """
         根据角色id获取未分配的用户列表信息
 
@@ -505,31 +501,31 @@ class UserDao:
         :param is_page: 是否开启分页
         :return: 角色未分配的用户列表信息
         """
+        conditions = [SysUser.del_flag == '0', or_(SysRole.role_id != query_object.role_id, SysRole.role_id.is_(None)), data_scope_sql]
+        if query_object.user_name:
+            conditions.append(SysUser.user_name == query_object.user_name)
+        if query_object.phonenumber:
+            conditions.append(SysUser.phonenumber == query_object.phonenumber)
+        conditions.append(
+            ~SysUser.user_id.in_(
+                select(SysUser.user_id)
+                .select_from(SysUser)
+                .join(
+                    SysUserRole,
+                    and_(SysUserRole.user_id == SysUser.user_id, SysUserRole.role_id == query_object.role_id),
+                )
+            )
+        )
+
         query = (
             select(SysUser)
             .join(SysDept, SysDept.dept_id == SysUser.dept_id, isouter=True)
             .join(SysUserRole, SysUserRole.user_id == SysUser.user_id, isouter=True)
             .join(SysRole, SysRole.role_id == SysUserRole.role_id, isouter=True)
-            .where(
-                SysUser.del_flag == '0',
-                SysUser.user_name == query_object.user_name if query_object.user_name else True,
-                SysUser.phonenumber == query_object.phonenumber if query_object.phonenumber else True,
-                or_(SysRole.role_id != query_object.role_id, SysRole.role_id.is_(None)),
-                ~SysUser.user_id.in_(
-                    select(SysUser.user_id)
-                    .select_from(SysUser)
-                    .join(
-                        SysUserRole,
-                        and_(SysUserRole.user_id == SysUser.user_id, SysUserRole.role_id == query_object.role_id),
-                    )
-                ),
-                data_scope_sql,
-            )
+            .where(*conditions)
             .distinct()
         )
-        unallocated_user_list: Union[PageModel, list[dict[str, Any]]] = await PageUtil.paginate(
-            db, query, query_object.page_num, query_object.page_size, is_page
-        )
+        unallocated_user_list = await PageUtil.paginate(db, query, query_object.page_num, query_object.page_size, is_page)
 
         return unallocated_user_list
 
@@ -565,12 +561,16 @@ class UserDao:
         :param user_role: 用户角色关联对象
         :return:
         """
-        await db.execute(
-            delete(SysUserRole).where(
-                SysUserRole.user_id == user_role.user_id if user_role.user_id else True,
-                SysUserRole.role_id == user_role.role_id if user_role.role_id else True,
-            )
-        )
+        conditions = []
+        if user_role.user_id:
+            conditions.append(SysUserRole.user_id == user_role.user_id)
+        if user_role.role_id:
+            conditions.append(SysUserRole.role_id == user_role.role_id)
+
+        query = delete(SysUserRole)
+        if conditions:
+            query = query.where(*conditions)
+        await db.execute(query)
 
     @classmethod
     async def get_user_role_detail(cls, db: AsyncSession, user_role: UserRoleModel) -> Union[SysUserRole, None]:

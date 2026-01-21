@@ -2,7 +2,7 @@ import io
 import os
 import re
 from collections.abc import Generator, Sequence
-from typing import Any, Literal, Union, overload
+from typing import Any, Literal, Union, cast
 
 import pandas as pd
 from openpyxl import Workbook
@@ -12,6 +12,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from sqlalchemy.engine.row import Row
 from sqlalchemy.orm.collections import InstrumentedList
 from sqlalchemy.sql.expression import TextClause, null
+from openpyxl.cell.cell import Cell
+from openpyxl.worksheet.worksheet import Worksheet
 
 from config.database import Base
 from config.env import CachePathConfig
@@ -76,54 +78,6 @@ class SqlalchemyUtil:
         return base_dict
 
     @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Base, transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> dict[str, Any]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: dict, transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> dict[Any, Any]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Row, transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> Union[dict[str, Any], list[dict[Any, Any]]]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Sequence[Base], transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> list[dict[str, Any]]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Sequence[dict], transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> list[dict[Any, Any]]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Sequence[Row], transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> list[Union[dict[str, Any], list[dict[Any, Any]]]]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Sequence[Any], transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> list[Any]: ...
-
-    @classmethod
-    @overload
-    def serialize_result(
-        cls, result: Any, transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
-    ) -> Any: ...
-
-    @classmethod
     def serialize_result(
         cls, result: Any, transform_case: Literal['no_case', 'snake_to_camel', 'camel_to_snake'] = 'no_case'
     ) -> Any:
@@ -152,7 +106,7 @@ class SqlalchemyUtil:
         return result
 
     @classmethod
-    def get_server_default_null(cls, dialect_name: str, need_explicit_null: bool = True) -> Union[TextClause, None]:
+    def get_server_default_null(cls, dialect_name: str, need_explicit_null: bool = True) -> Union[TextClause, None, Any]:
         """
         根据数据库方言动态返回值为null的server_default
 
@@ -184,38 +138,6 @@ class CamelCaseUtil:
         return words[0] + ''.join(word.capitalize() for word in words[1:])
 
     @classmethod
-    @overload
-    def transform_result(cls, result: Base) -> dict[str, Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: dict) -> dict[Any, Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Row) -> Union[dict[str, Any], list[dict[Any, Any]]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Base]) -> list[dict[str, Any]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[dict]) -> list[dict[Any, Any]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Row]) -> list[Union[dict[str, Any], list[dict[Any, Any]]]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Any]) -> list[Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Any) -> Any: ...
-
-    @classmethod
     def transform_result(cls, result: Any) -> Any:
         """
         针对不同类型将下划线形式(snake_case)批量转换为小驼峰形式(camelCase)方法
@@ -242,38 +164,6 @@ class SnakeCaseUtil:
         # 在大写字母前添加一个下划线，然后将整个字符串转为小写
         words = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_str)
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', words).lower()
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Base) -> dict[str, Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: dict) -> dict[Any, Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Row) -> Union[dict[str, Any], list[dict[Any, Any]]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Base]) -> list[dict[str, Any]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[dict]) -> list[dict[Any, Any]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Row]) -> list[Union[dict[str, Any], list[dict[Any, Any]]]]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Sequence[Any]) -> list[Any]: ...
-
-    @classmethod
-    @overload
-    def transform_result(cls, result: Any) -> Any: ...
 
     @classmethod
     def transform_result(cls, result: Any) -> Any:
@@ -337,17 +227,21 @@ def get_excel_template(header_list: list, selector_header_list: list, option_lis
     # 创建Excel工作簿
     wb = Workbook()
     # 选择默认的活动工作表
-    ws = wb.active
+    ws_active = wb.active
+    if ws_active is None:
+        # openpyxl documents wb.active as returning a worksheet; guard for type checkers
+        ws_active = wb.create_sheet()
+    ws: Worksheet = cast(Worksheet, ws_active)
 
     # 设置表头文字
-    headers = header_list
+    headers: list[str] = [str(h) for h in header_list]
 
     # 设置表头背景样式为灰色，前景色为白色
     header_fill = PatternFill(start_color='ababab', end_color='ababab', fill_type='solid')
 
     # 将表头写入第一行
     for col_num, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col_num)
+        cell: Cell = cast(Cell, ws.cell(row=1, column=col_num))
         cell.value = header
         cell.fill = header_fill
         # 设置列宽度为16
@@ -363,10 +257,11 @@ def get_excel_template(header_list: list, selector_header_list: list, option_lis
         column_selector_header_index = headers.index(selector_header) + 1
 
         # 创建数据有效性规则
-        header_option = []
+        header_option: list[str] = []
         for option in options:
-            if option.get(selector_header):
-                header_option = option.get(selector_header)
+            option_values = option.get(selector_header)
+            if option_values:
+                header_option = [str(item) for item in option_values]
         dv = DataValidation(type='list', formula1=f'"{",".join(header_option)}"')
         # 设置数据有效性规则的起始单元格和结束单元格
         dv.add(
