@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # 1. 数据库服务
-  ruoyi-pg:
+  EVE-pg:
     image: postgres:15-alpine
     container_name: ${DB_CONTAINER_NAME}
     restart: always
@@ -18,20 +18,20 @@ services:
       test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
       interval: 5s
     networks:
-      - ruoyi-network
+      - EVE-network
 
   # 2. Redis 服务
-  ruoyi-redis:
+  EVE-redis:
     image: redis:7-alpine
-    container_name: ruoyi-redis
+    container_name: EVE-redis
     restart: always
     networks:
-      - ruoyi-network
+      - EVE-network
 
   # 3. 后端服务
-  ruoyi-backend-pg:
+  EVE-backend-pg:
     build:
-      context: ./ruoyi-fastapi-backend
+      context: ./EVE-fastapi-backend
       dockerfile: Dockerfile.pg
     container_name: eve_backend
     restart: always
@@ -40,7 +40,7 @@ services:
     environment:
       - APP_ENV=dockerpg
       - ENV=dockerpg
-      - DB_HOST=ruoyi-pg  # 对应数据库服务名
+      - DB_HOST=EVE-pg  # 对应数据库服务名
       - DB_PORT=5432
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -50,12 +50,12 @@ services:
       - EVE_CALLBACK_URL=${EVE_CALLBACK_URL}
       - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
-      ruoyi-pg:
+      EVE-pg:
         condition: service_healthy
-      ruoyi-redis:
+      EVE-redis:
         condition: service_started
     networks:
-      - ruoyi-network
+      - EVE-network
 
   # 4. SDE 处理器 (指向上一级)
   # sde-processor:
@@ -64,27 +64,27 @@ services:
   #   container_name: eve_sde_worker
   #   restart: always
   #   environment:
-  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@ruoyi-pg:5432/${DB_NAME}
+  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@EVE-pg:5432/${DB_NAME}
   #   depends_on:
-  #     ruoyi-pg:
+  #     EVE-pg:
   #       condition: service_healthy
   #   networks:
-  #     - ruoyi-network
+  #     - EVE-network
 
   # 5. 前端服务
   frontend:
     build:
-      context: ./ruoyi-fastapi-frontend
+      context: ./EVE-fastapi-frontend
     container_name: eve_frontend
     restart: always
     ports:
       - "${FRONTEND_EXTERNAL_PORT}:80"
     volumes:
       # 建议使用相对当前目录的路径，并确保文件确实存在
-      - ./ruoyi-fastapi-frontend/bin/nginx.dockerpg.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./EVE-fastapi-frontend/bin/nginx.dockerpg.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - ruoyi-network
+      - EVE-network
 
 networks:
-  ruoyi-network: # 统一使用你要求的网络名称
+  EVE-network: # 统一使用你要求的网络名称
     driver: bridge
