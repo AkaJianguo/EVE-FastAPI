@@ -1,25 +1,67 @@
+/*******************************************************************************
+ 1. 模式 (Schema) 与 环境函数初始化
+ 职责：物理隔离业务(public)、静态字典(row)与动态行情(market)
+*******************************************************************************/
+CREATE SCHEMA IF NOT EXISTS market;
+CREATE SCHEMA IF NOT EXISTS row; 
+
+SET search_path TO public, market, row;
+
+-- 支持若依权限逻辑的 find_in_set
+CREATE OR REPLACE FUNCTION "find_in_set"(int8, varchar)
+    RETURNS "pg_catalog"."bool" AS $BODY$
+DECLARE
+    STR ALIAS FOR $1;
+    STRS ALIAS FOR $2;
+    POS INTEGER;
+    STATUS BOOLEAN;
+BEGIN
+    SELECT POSITION( ','||STR||',' IN ','||STRS||',') INTO POS;
+    IF POS > 0 THEN STATUS = TRUE; ELSE STATUS = FALSE; END IF;
+    RETURN STATUS;
+END; $BODY$ LANGUAGE plpgsql VOLATILE COST 100;
+
+-- 字符串处理函数
+CREATE OR REPLACE FUNCTION substring_index(varchar, varchar, integer)
+RETURNS varchar AS $$
+DECLARE
+    tokens varchar[];
+    length integer;
+    indexnum integer;
+BEGIN
+    tokens := pg_catalog.string_to_array($1, $2);
+    length := pg_catalog.array_upper(tokens, 1);
+    indexnum := length - ($3 * -1) + 1;
+    IF $3 >= 0 THEN RETURN pg_catalog.array_to_string(tokens[1:$3], $2);
+    ELSE RETURN pg_catalog.array_to_string(tokens[indexnum:length], $2);
+    END IF;
+END; $$ IMMUTABLE STRICT LANGUAGE PLPGSQL;
+
+/*******************************************************************************
+ 2. 若依系统管理基础表 (System Core)
+*******************************************************************************/
+
 -- ----------------------------
 -- 1、部门表
 -- ----------------------------
-drop table if exists sys_dept;
-create table sys_dept (
-    dept_id bigserial,
-    parent_id bigint default 0,
-    ancestors varchar(50) default '',
-    dept_name varchar(30) default '',
-    order_num int4 default 0,
-    leader varchar(20) default null,
-    phone varchar(11) default null,
-    email varchar(50) default null,
-    status char(1) default '0',
-    del_flag char(1) default '0',
-    create_by varchar(64) default '',
+DROP TABLE IF EXISTS sys_dept;
+CREATE TABLE sys_dept (
+    dept_id bigserial PRIMARY KEY,
+    parent_id bigint DEFAULT 0,
+    ancestors varchar(50) DEFAULT '',
+    dept_name varchar(30) DEFAULT '',
+    order_num int4 DEFAULT 0,
+    leader varchar(20) DEFAULT NULL,
+    phone varchar(11) DEFAULT NULL,
+    email varchar(50) DEFAULT NULL,
+    status char(1) DEFAULT '0',
+    del_flag char(1) DEFAULT '0',
+    create_by varchar(64) DEFAULT '',
     create_time timestamp(0),
-    update_by varchar(64) default '',
-    update_time timestamp(0),
-    primary key (dept_id)
+    update_by varchar(64) DEFAULT '',
+    update_time timestamp(0)
 );
-alter sequence sys_dept_dept_id_seq restart 200;
+ALTER SEQUENCE sys_dept_dept_id_seq RESTART 200;
 comment on column sys_dept.dept_id is '部门id';
 comment on column sys_dept.parent_id is '父部门id';
 comment on column sys_dept.ancestors is '祖级列表';
@@ -1144,7 +1186,7 @@ CREATE TABLE eve_entity (
     PRIMARY KEY (entity_id)
 );
 
--- 添加注释方便 Navicat 查看
+-- 添加注释
 COMMENT ON TABLE  eve_entity IS 'EVE 组织架构表 (合并联盟与军团)';
 COMMENT ON COLUMN eve_entity.entity_id IS '实体ID (ESI ID)';
 COMMENT ON COLUMN eve_entity.parent_id IS '父级ID (联盟为0)';
@@ -1152,3 +1194,142 @@ COMMENT ON COLUMN eve_entity.ancestors IS '祖级列表';
 COMMENT ON COLUMN eve_entity.entity_type IS '类型 (1联盟 2军团)';
 COMMENT ON COLUMN eve_entity.is_authorized IS '授权状态 (0未授权 1已授权)';
 COMMENT ON COLUMN eve_entity.status IS '状态 (0正常 1停用)';
+
+/*******************************************************************************
+ 3. MARKET 行情数据层 (自动化分表结构)
+*******************************************************************************/
+
+-- MARKET 核心逻辑层 - 订单集合追踪
+CREATE TABLE IF NOT EXISTS market.orderset (
+    id BIGSERIAL PRIMARY KEY,
+    downloaded TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 自动化分表 (按 typeID 后一位分表)
+DO $$
+BEGIN
+    FOR i IN 0..9 LOOP
+        EXECUTE format('
+            CREATE TABLE IF NOT EXISTS market.orders_%s (
+                id SERIAL PRIMARY KEY,
+                "orderID" BIGINT NOT NULL,
+                "typeID" INTEGER NOT NULL,
+                issued TIMESTAMP WITH TIME ZONE,
+                buy BOOLEAN,
+                volume BIGINT,
+                price NUMERIC(19, 4),
+                "stationID" BIGINT,
+                region INTEGER,
+                "orderSet" BIGINT REFERENCES market.orderset(id)
+            )', i);
+        EXECUTE format('CREATE INDEX IF NOT EXISTS idx_orders_%s_main ON market.orders_%s (region, "typeID", buy)', i, i);
+    END LOOP;
+END $$;
+
+-- 聚合数据表
+CREATE TABLE IF NOT EXISTS market.aggregates (
+    what VARCHAR(255) PRIMARY KEY,
+    weightedaverage NUMERIC(19, 4),
+    fivepercent NUMERIC(19, 4),
+    maxval NUMERIC(19, 4),
+    minval NUMERIC(19, 4),
+    volume BIGINT,
+    numorders INTEGER,
+    "orderSet" BIGINT REFERENCES market.orderset(id)
+);
+
+/*******************************************************************************
+ 4. SDE 静态数据层 (基于 JSON 存储)
+*******************************************************************************/
+
+-- 物品表 (JSON 格式存储 SDE typeID 数据)
+CREATE TABLE IF NOT EXISTS row.types (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_types_created_at ON row.types(created_at);
+
+-- 物品分组表
+CREATE TABLE IF NOT EXISTS row.groups (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 物品类别表
+CREATE TABLE IF NOT EXISTS row.categories (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 地图：星系
+CREATE TABLE IF NOT EXISTS row.map_solar_systems (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 地图：星座
+CREATE TABLE IF NOT EXISTS row.map_constellations (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 地图：区域
+CREATE TABLE IF NOT EXISTS row.map_regions (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 蓝图表
+CREATE TABLE IF NOT EXISTS row.blueprints (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 工业材料表
+CREATE TABLE IF NOT EXISTS row.industry_materials (
+    id BIGINT PRIMARY KEY,
+    data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+/*******************************************************************************
+ 5. SDE 视图解析层 (基于 JSON 映射 - 便于 ORM 查询)
+*******************************************************************************/
+
+-- 物品层级视图
+CREATE OR REPLACE VIEW public.vw_types_hierarchy AS
+SELECT 
+    t.id::int AS type_id,
+    t.data->'name'->>'en' AS type_name_en,
+    t.data->'name'->>'zh' AS type_name_zh,
+    g.id::int AS group_id,
+    g.data->'name'->>'en' AS group_name_en,
+    g.data->'name'->>'zh' AS group_name_zh,
+    c.id::int AS category_id,
+    c.data->'name'->>'en' AS category_name_en,
+    c.data->'name'->>'zh' AS category_name_zh
+FROM row.types t
+LEFT JOIN row.groups g ON (t.data->>'groupID')::int = g.id::int
+LEFT JOIN row.categories c ON (g.data->>'categoryID')::int = c.id::int;
+
+-- 星系地理视图
+CREATE OR REPLACE VIEW public.vw_map_systems AS
+SELECT 
+    s.id::int AS solar_system_id,
+    s.data->'name'->>'en' AS solar_system_name_en,
+    (s.data->>'constellationID')::int AS constellation_id,
+    c.data->'name'->>'en' AS constellation_name_en,
+    r.id::int AS region_id,
+    r.data->'name'->>'en' AS region_name_en
+FROM row.map_solar_systems s
+LEFT JOIN row.map_constellations c ON (s.data->>'constellationID')::int = c.id::int
+LEFT JOIN row.map_regions r ON (c.data->>'regionID')::int = r.id::int;
+
+COMMENT ON TABLE eve_entity IS '状态 (0正常 1停用)';
