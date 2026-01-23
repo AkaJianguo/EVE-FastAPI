@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  # 1. 数据库服务
-  EVE-pg:
+  # 1. 数据库服务 - PostgreSQL 15
+  eve-pg:
     image: postgres:15-alpine
     container_name: ${DB_CONTAINER_NAME}
     restart: always
@@ -13,23 +13,25 @@ services:
     ports:
       - "${DB_EXTERNAL_PORT}:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ../postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
       interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
-      - EVE-network
+      - eve-network
 
-  # 2. Redis 服务
-  EVE-redis:
+  # 2. Redis 缓存
+  eve-redis:
     image: redis:7-alpine
-    container_name: EVE-redis
+    container_name: eve-redis
     restart: always
     networks:
-      - EVE-network
+      - eve-network
 
-  # 3. 后端服务
-  EVE-backend-pg:
+  # 3. 后端 FastAPI 服务
+  eve-backend-pg:
     build:
       context: ./EVE-fastapi-backend
       dockerfile: Dockerfile.pg
@@ -38,53 +40,65 @@ services:
     ports:
       - "${BACKEND_EXTERNAL_PORT}:9099"
     environment:
+      # 应用配置
       - APP_ENV=dockerpg
       - ENV=dockerpg
-      - DB_HOST=EVE-pg  # 对应数据库服务名
+      # 数据库连接
+      - DB_HOST=${DB_SERVICE_NAME}
       - DB_PORT=5432
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_NAME}
+      # Redis 连接
+      - REDIS_HOST=${REDIS_SERVICE_NAME}
+      - REDIS_PORT=6379
+      # EVE SSO 配置（本地开发）
       - EVE_CLIENT_ID=${EVE_CLIENT_ID}
       - EVE_CLIENT_SECRET=${EVE_CLIENT_SECRET}
       - EVE_CALLBACK_URL=${EVE_CALLBACK_URL}
       - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
-      EVE-pg:
+      eve-pg:
         condition: service_healthy
-      EVE-redis:
+      eve-redis:
         condition: service_started
     networks:
-      - EVE-network
+      - eve-network
 
-  # 4. SDE 处理器 (指向上一级)
-  # sde-processor:
-  #   build:
-  #     context: ../eve-sde-processor
-  #   container_name: eve_sde_worker
-  #   restart: always
-  #   environment:
-  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@EVE-pg:5432/${DB_NAME}
-  #   depends_on:
-  #     EVE-pg:
-  #       condition: service_healthy
-  #   networks:
-  #     - EVE-network
-
-  # 5. 前端服务
+  # 4. 前端 Nginx 服务
   frontend:
     build:
       context: ./EVE-fastapi-frontend
+      dockerfile: Dockerfile
     container_name: eve_frontend
     restart: always
     ports:
       - "${FRONTEND_EXTERNAL_PORT}:80"
+    environment:
+      - BACKEND_HOST=${BACKEND_HOST}
     volumes:
-      # 建议使用相对当前目录的路径，并确保文件确实存在
+      # 使用 nginx.dockerpg.conf（本地测试配置）
       - ./EVE-fastapi-frontend/bin/nginx.dockerpg.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - eve-backend-pg
     networks:
-      - EVE-network
+      - eve-network
+
+  # 可选: pgAdmin（本地开发工具）
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: eve_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - eve-pg
+    networks:
+      - eve-network
 
 networks:
-  EVE-network: # 统一使用你要求的网络名称
+  eve-network:
     driver: bridge

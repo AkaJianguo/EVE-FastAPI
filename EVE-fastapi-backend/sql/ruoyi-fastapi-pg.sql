@@ -1238,72 +1238,7 @@ CREATE TABLE IF NOT EXISTS market.aggregates (
     "orderSet" BIGINT REFERENCES market.orderset(id)
 );
 
-/*******************************************************************************
- 4. SDE 静态数据层 (基于 JSON 存储)
-*******************************************************************************/
-
--- 物品表 (JSON 格式存储 SDE typeID 数据)
-CREATE TABLE IF NOT EXISTS row.types (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX IF NOT EXISTS idx_types_created_at ON row.types(created_at);
-
--- 物品分组表
-CREATE TABLE IF NOT EXISTS row.groups (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 物品类别表
-CREATE TABLE IF NOT EXISTS row.categories (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 地图：星系
-CREATE TABLE IF NOT EXISTS row.map_solar_systems (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 地图：星座
-CREATE TABLE IF NOT EXISTS row.map_constellations (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 地图：区域
-CREATE TABLE IF NOT EXISTS row.map_regions (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 蓝图表
-CREATE TABLE IF NOT EXISTS row.blueprints (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 工业材料表
-CREATE TABLE IF NOT EXISTS row.industry_materials (
-    id BIGINT PRIMARY KEY,
-    data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-/*******************************************************************************
- 5. SDE 视图解析层 (基于 JSON 映射 - 便于 ORM 查询)
-*******************************************************************************/
-
--- 物品层级视图
+-- SDE 视图解析层（使用 raw.* 数据）
 CREATE OR REPLACE VIEW public.vw_types_hierarchy AS
 SELECT 
     t.id::int AS type_id,
@@ -1315,11 +1250,10 @@ SELECT
     c.id::int AS category_id,
     c.data->'name'->>'en' AS category_name_en,
     c.data->'name'->>'zh' AS category_name_zh
-FROM row.types t
-LEFT JOIN row.groups g ON (t.data->>'groupID')::int = g.id::int
-LEFT JOIN row.categories c ON (g.data->>'categoryID')::int = c.id::int;
+FROM raw.types t
+LEFT JOIN raw.groups g ON (t.data->>'groupID')::int = g.id::int
+LEFT JOIN raw.categories c ON (g.data->>'categoryID')::int = c.id::int;
 
--- 星系地理视图
 CREATE OR REPLACE VIEW public.vw_map_systems AS
 SELECT 
     s.id::int AS solar_system_id,
@@ -1328,8 +1262,8 @@ SELECT
     c.data->'name'->>'en' AS constellation_name_en,
     r.id::int AS region_id,
     r.data->'name'->>'en' AS region_name_en
-FROM row.map_solar_systems s
-LEFT JOIN row.map_constellations c ON (s.data->>'constellationID')::int = c.id::int
-LEFT JOIN row.map_regions r ON (c.data->>'regionID')::int = r.id::int;
+FROM raw.map_solar_systems s
+LEFT JOIN raw.map_constellations c ON (s.data->>'constellationID')::int = c.id::int
+LEFT JOIN raw.map_regions r ON (c.data->>'regionID')::int = r.id::int;
 
 COMMENT ON TABLE eve_entity IS '状态 (0正常 1停用)';
