@@ -16,6 +16,7 @@ from middlewares.handle import handle_middleware
 from sub_applications.handle import handle_sub_applications
 from utils.common_util import worship
 from utils.log_util import logger
+from module_eve.api.market_api import market_router
 
 
 # 生命周期事件
@@ -101,5 +102,7 @@ def create_app() -> FastAPI:
     handle_exception(app)
     # 自动注册路由
     auto_register_routers(app)
+    # 手动挂载 EVE 行情路由
+    app.include_router(router=market_router, prefix='/eve/market')
 
     return app
