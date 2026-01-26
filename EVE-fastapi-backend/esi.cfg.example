@@ -1,0 +1,15 @@
+[oauth]
+clientid = 
+secret = 
+refreshtoken = 
+
+[database]
+connectionstring = postgresql://postgres:password@localhost:5432/database_name
+
+[redis]
+host = localhost
+port = 6379
+
+[requests]
+useragent = your-user-agent
+max_workers = 10

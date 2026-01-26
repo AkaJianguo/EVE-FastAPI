@@ -68,9 +68,30 @@ class MarketAggregator:
 
             # 更新最后刷新时间
             self.redis.set("fp-lastupdate", datetime.datetime.utcnow().isoformat())
-    def __init__(self, config_path="esi.cfg"):
+    def __init__(self, config_path=None):
+        # 自动定位项目根目录下的配置文件；支持 ENV_STATE 切换本地/生产
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(current_dir))
+
+        if config_path is None:
+            env_state = os.getenv("ENV_STATE", "").lower()
+            cfg_name = "esi.prod.cfg" if env_state == "production" else "esi.local.cfg"
+            config_path = os.path.join(project_root, cfg_name)
+            logging.info(f"ENV_STATE={env_state or 'local'}, 选择配置: {config_path}")
+        else:
+            logging.info(f"使用传入的配置文件: {config_path}")
+
         self.config = ConfigParser()
-        self.config.read(config_path)
+
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"找不到配置文件，请确保 {config_path} 存在！")
+
+        self.config.read(config_path, encoding='utf-8')
+        
+        # 优先使用环境变量注入的敏感信息，避免写死在本地文件
+        self.client_id = os.getenv("EVE_CLIENT_ID", self.config.get('oauth', 'clientid', fallback=''))
+        self.client_secret = os.getenv("EVE_CLIENT_SECRET", self.config.get('oauth', 'secret', fallback=''))
+        self.refresh_token = os.getenv("EVE_REFRESH_TOKEN", self.config.get('oauth', 'refreshtoken', fallback=''))
         
         # 数据库与 Redis 初始化
         self.engine = create_engine(self.config.get('database', 'connectionstring'))
@@ -84,9 +105,9 @@ class MarketAggregator:
 
     def get_access_token(self):
         """获取 SSO 授权令牌"""
-        client_id = self.config.get('oauth', 'clientid')
-        secret = self.config.get('oauth', 'secret')
-        refresh_token = self.config.get('oauth', 'refreshtoken')
+        client_id = self.client_id
+        secret = self.client_secret
+        refresh_token = self.refresh_token
         
         auth = base64.b64encode(f"{client_id}:{secret}".encode()).decode()
         headers = {'Authorization': f'Basic {auth}', 'User-Agent': self.user_agent}

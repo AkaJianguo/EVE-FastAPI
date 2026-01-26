@@ -2,6 +2,14 @@
 
 > 深入讲解 Dockerfile、Docker Compose 编排、容器启动流程
 
+## ⚙️ 配置文件与环境切换
+
+- 配置存放：后端目录下的 `EVE-fastapi-backend/esi.local.cfg`（本地）、`EVE-fastapi-backend/esi.prod.cfg`（生产），模板在项目根的 `esi.cfg.example`。
+- 选择逻辑：`ENV_STATE=production` 时自动加载 `esi.prod.cfg`，否则默认 `esi.local.cfg`；可传入 `config_path` 覆盖。
+- 敏感信息：`EVE_CLIENT_ID`、`EVE_CLIENT_SECRET`、`EVE_REFRESH_TOKEN` 支持环境变量优先，未设置时回落到对应 cfg。
+- 连接串：本地示例 `postgresql://postgres:your-local-password@localhost:5432/eve_db`；生产示例 `postgresql://postgres:your-prod-password@localhost:5432/your-prod-db`，容器访问宿主机可将 host 改为 `172.17.0.1`。
+- Git 忽略：`.gitignore` 已忽略所有非 `.cfg.example` 的 `.cfg`，请勿将真实凭证提交到仓库。
+
 ## 📦 Dockerfile 详解
 
 ### 1. 后端 Dockerfile (`EVE-fastapi-backend/Dockerfile.pg`)
@@ -236,7 +244,7 @@ CMD ["python", "main.py"]
 
 ## 🐳 Docker Compose 编排详解
 
-### docker-compose.server.yml（生产环境）
+### docker-compose.local.yml（本地开发）
 
 ```yaml
 version: '3.8'
@@ -284,7 +292,7 @@ services:
   eve-backend-pg:
     # 从 Dockerfile.pg 构建镜像
     build:
-      context: ./EVE-FastAPI/EVE-fastapi-backend
+      context: ./EVE-fastapi-backend
       dockerfile: Dockerfile.pg
     
     container_name: eve_backend
@@ -347,7 +355,7 @@ services:
   # ==================== 前端 ====================
   frontend:
     build:
-      context: ./EVE-FastAPI/EVE-fastapi-frontend
+      context: ./EVE-fastapi-frontend
       dockerfile: Dockerfile
     
     container_name: eve_frontend
@@ -371,9 +379,7 @@ networks:
     driver: bridge
 ```
 
-### docker-compose.local.yml（本地开发）
-
-与 `.server.yml` 基本相同，差异：
+### 与生产编排的差异
 
 ```yaml
 # 1. 数据库端口映射使用本地端口
@@ -407,10 +413,10 @@ pgadmin:
 
 ## 🚀 启动流程详解
 
-### 完整启动时间轴
+### 完整启动时间轴（本地）
 
 ```
-命令: docker-compose -f docker-compose.server.yml --env-file .env.server up -d
+命令: docker compose -f docker-compose.local.yml --env-file .env.local up -d
 
 T+0s    Compose 读取 .env.server 文件
         ├─ 加载所有环境变量
@@ -490,39 +496,58 @@ T+40s   所有服务就绪
 
 ## 📋 常用命令
 
-### 容器生命周期
+### 容器生命周期（本地）
+
+> 本地请带上 `.env.local`（包含 DB/Redis/后端服务名变量），否则后端无法连库。
 
 ```bash
 # 启动所有服务（后台）
-docker-compose -f docker-compose.server.yml up -d
+docker compose -f docker-compose.local.yml --env-file .env.local up -d
 
 # 启动并查看日志（前台）
-docker-compose -f docker-compose.server.yml up
+docker compose -f docker-compose.local.yml --env-file .env.local up
 
 # 停止所有服务（保留数据）
-docker-compose -f docker-compose.server.yml stop
+docker compose -f docker-compose.local.yml --env-file .env.local stop
 
 # 停止并删除容器、卷等
-docker-compose -f docker-compose.server.yml down
+docker compose -f docker-compose.local.yml --env-file .env.local down
 
 # 完全清理（删除所有数据）
-docker-compose -f docker-compose.server.yml down -v
+docker compose -f docker-compose.local.yml --env-file .env.local down -v
 
 # 重启单个服务
-docker-compose -f docker-compose.server.yml restart eve-backend-pg
+docker compose -f docker-compose.local.yml --env-file .env.local restart eve-backend-pg
 
 # 查看容器状态
-docker-compose -f docker-compose.server.yml ps
+docker compose -f docker-compose.local.yml --env-file .env.local ps
 ```
 
-### 镜像管理
+### 前端热更新（Vite Dev 容器）
+
+```bash
+# 启动后端依赖 + Vite 热更新前端
+docker compose -f docker-compose.local.yml --env-file .env.local up -d eve-pg eve-redis eve-backend-pg frontend-dev
+
+# 停止前端热更新容器
+docker compose -f docker-compose.local.yml --env-file .env.local stop frontend-dev
+
+# 查看前端热更新日志（含 HMR）
+docker compose -f docker-compose.local.yml --env-file .env.local logs -f frontend-dev
+
+# 访问地址
+# 前端开发: http://localhost:5173 （HMR 端口 24678 已映射）
+# 后端 API: http://localhost:19099/docker-api
+```
+
+### 镜像管理（本地）
 
 ```bash
 # 构建镜像（不启动）
-docker-compose -f docker-compose.server.yml build
+docker compose -f docker-compose.local.yml build
 
 # 不使用缓存重新构建
-docker-compose -f docker-compose.server.yml build --no-cache
+docker compose -f docker-compose.local.yml build --no-cache
 
 # 删除所有相关镜像
 docker rmi $(docker images | grep eve | awk '{print $3}')
@@ -531,23 +556,23 @@ docker rmi $(docker images | grep eve | awk '{print $3}')
 docker images | grep eve
 ```
 
-### 日志查看
+### 日志查看（本地）
 
 ```bash
 # 查看所有服务日志
-docker-compose -f docker-compose.server.yml logs
+docker compose -f docker-compose.local.yml logs
 
 # 实时查看日志
-docker-compose -f docker-compose.server.yml logs -f
+lsof -i:5433
 
 # 查看特定服务日志
-docker-compose -f docker-compose.server.yml logs eve-backend-pg
+docker compose -f docker-compose.local.yml logs eve-backend-pg
 
 # 查看最近 100 行
-docker-compose -f docker-compose.server.yml logs --tail 100
+docker compose -f docker-compose.local.yml logs --tail 100
 
 # 查看某个时间之后的日志
-docker-compose -f docker-compose.server.yml logs --since 2h
+docker compose -f docker-compose.local.yml logs --since 2h
 ```
 
 ---

@@ -6,6 +6,11 @@ import createVitePlugins from './vite/plugins'
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV } = env
+
+  // dev 代理目标：优先取容器注入的 BACKEND_HOST/BACKEND_PORT，其次本机 127.0.0.1:19099
+  const backendHost = env.BACKEND_HOST || process.env.BACKEND_HOST || '127.0.0.1'
+  const backendPort = env.BACKEND_PORT || process.env.BACKEND_PORT || '9099'
+  const backendTarget = `http://${backendHost}:${backendPort}`
   return {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
@@ -39,17 +44,14 @@ export default defineConfig(({ mode, command }) => {
       }
     },
     // vite 相关配置
-   server: {
+    server: {
       port: 80,
       host: true,
       open: true,
       proxy: {
-        // 本地开发环境代理配置
         '/dev-api': {
-          // 后端在 Docker 中运行，本地访问使用 127.0.0.1:19099
-          target: 'http://127.0.0.1:19099', 
+          target: backendTarget,
           changeOrigin: true,
-          // 直接删除 /dev-api 前缀，后端有 pre_auth 拦截器处理路由重写
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         }
       }

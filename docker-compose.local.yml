@@ -37,6 +37,8 @@ services:
       dockerfile: Dockerfile.pg
     container_name: eve_backend
     restart: always
+    volumes:
+      - ./EVE-fastapi-backend:/app
     ports:
       - "${BACKEND_EXTERNAL_PORT}:9099"
     environment:
@@ -84,20 +86,39 @@ services:
     networks:
       - eve-network
 
-  # 可选: pgAdmin（本地开发工具）
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: eve_pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+  # 前端本地开发热更（Vite dev server）
+  frontend-dev:
+    image: node:20-alpine
+    container_name: eve_frontend_dev
+    working_dir: /app
+    command: sh -c "npm config set registry https://registry.npmmirror.com && npm install --no-package-lock && npm run dev -- --host --port 5173 --strictPort"
     ports:
-      - "5050:80"
+      - "5173:5173"      # Vite 页面
+      - "24678:24678"    # Vite HMR
+    volumes:
+      - ./EVE-fastapi-frontend:/app
+    environment:
+      - BACKEND_HOST=${BACKEND_HOST}
+      - BACKEND_PORT=9099
     depends_on:
-      - eve-pg
+      - eve-backend-pg
     networks:
       - eve-network
+
+  # 可选: pgAdmin（本地开发工具）
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: eve_pgadmin
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - eve-pg
+  #   networks:
+  #     - eve-network
 
 networks:
   eve-network:
