@@ -9,9 +9,9 @@ import pandas as pd
 import numpy as np
 import redis
 import httpx  # 建议在 FastAPI 环境下使用 httpx 替代 requests
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, bindparam
 from configparser import ConfigParser
-from concurrent.futures import as_completed
+import concurrent.futures
 
 # 日志配置
 logging.basicConfig(
@@ -49,25 +49,28 @@ class MarketAggregator:
         ) t
         """
 
-        with self.engine.connect() as conn:
-            # 统计卖单 Top 10 (fp-sell)
-            sell_res = conn.execute(
-                text(sql_template.format(suffix=table_suffix)), 
-                {"oid": orderset_id, "is_buy": False}
-            ).fetchone()
-            if sell_res and sell_res[0]:
-                self.redis.set("fp-sell", json.dumps(sell_res[0]))
+        try:
+            with self.engine.connect() as conn:
+                # 统计卖单 Top 10 (fp-sell)
+                sell_res = conn.execute(
+                    text(sql_template.format(suffix=table_suffix)), 
+                    {"oid": orderset_id, "is_buy": False}
+                ).fetchone()
+                if sell_res and sell_res[0]:
+                    self.redis.set("fp-sell", json.dumps(sell_res[0]))
 
-            # 统计买单 Top 10 (fp-buy)
-            buy_res = conn.execute(
-                text(sql_template.format(suffix=table_suffix)), 
-                {"oid": orderset_id, "is_buy": True}
-            ).fetchone()
-            if buy_res and buy_res[0]:
-                self.redis.set("fp-buy", json.dumps(buy_res[0]))
+                # 统计买单 Top 10 (fp-buy)
+                buy_res = conn.execute(
+                    text(sql_template.format(suffix=table_suffix)), 
+                    {"oid": orderset_id, "is_buy": True}
+                ).fetchone()
+                if buy_res and buy_res[0]:
+                    self.redis.set("fp-buy", json.dumps(buy_res[0]))
 
-            # 更新最后刷新时间
-            self.redis.set("fp-lastupdate", datetime.datetime.utcnow().isoformat())
+                # 更新最后刷新时间
+                self.redis.set("fp-lastupdate", datetime.datetime.utcnow().isoformat())
+        except Exception as exc:  # 容忍缺少 row.npc_stations 等表时不中断全流程
+            logging.warning(f"跳过 Top10 计算，原因: {exc}")
     def __init__(self, config_path=None):
         # 自动定位项目根目录下的配置文件；支持 ENV_STATE 切换本地/生产
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -130,19 +133,68 @@ class MarketAggregator:
         csv_path = os.path.join(self.temp_dir, f"orderset-{orderset_id}.csv")
         logging.info(f"开始抓取批次 {orderset_id} -> {csv_path}")
 
-        # [此处保留你原有的 getData 和 processData 逻辑，但需将输出字段对齐 market.orders 表结构]
-        # ... 抓取逻辑 ...
+        # 读取并发配置，默认 10 个 worker
+        max_workers = self.config.getint('requests', 'max_workers', fallback=10)
+        headers = {'User-Agent': self.user_agent}
+
+        # 仅抓取热门区域 "The Forge" (10000002)，若需全量可扩展此列表
+        regions = [10000002]
+
+        row_count = 0
+        with open(csv_path, "w", newline='', encoding="utf-8") as f:
+            writer = csv.writer(f, delimiter='\t')
+
+            def fetch_region(region_id: int):
+                nonlocal row_count
+                base_url = f"https://esi.evetech.net/latest/markets/{region_id}/orders/"
+                page = 1
+                with httpx.Client(headers=headers, timeout=30.0) as client:
+                    while True:
+                        resp = client.get(base_url, params={"page": page})
+                        if resp.status_code != 200:
+                            logging.warning(f"区域 {region_id} 第 {page} 页抓取失败: {resp.status_code}")
+                            break
+
+                        data = resp.json()
+                        for order in data:
+                            writer.writerow([
+                                order.get("order_id"),
+                                order.get("type_id"),
+                                order.get("issued"),
+                                order.get("is_buy_order", False),
+                                order.get("volume_remain"),
+                                order.get("price"),
+                                order.get("location_id"),
+                                region_id,
+                                orderset_id,
+                            ])
+                            row_count += 1
+
+                        total_pages = int(resp.headers.get("X-Pages", "1"))
+                        if page >= total_pages:
+                            break
+                        page += 1
+
+            # 并行抓取各区域
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                list(executor.map(fetch_region, regions))
+
+        logging.info(f"批次 {orderset_id} 抓取完成，写入 {row_count} 行")
+        if row_count == 0:
+            logging.warning("抓取结果为空，将继续 COPY 但后续聚合会直接跳过")
 
         # 2. 批量入库 (使用 COPY 提高稳定性)
         table_suffix = (orderset_id // 100) % 10
         with self.engine.begin() as conn:
-            # 注意：此处明确指向 market 模式
-            sql = f"""
+            # 使用 STDIN 由应用侧流式写入，避免 Postgres 容器访问不到应用容器文件路径
+            copy_sql = f"""
             COPY market.orders_{table_suffix} 
             ("orderID", "typeID", issued, buy, volume, price, "stationID", region, "orderSet") 
-            FROM '{csv_path}' WITH (FORMAT csv, DELIMITER '\t')
+            FROM STDIN WITH (FORMAT csv, DELIMITER '\t')
             """
-            conn.execute(text(sql))
+            pg_conn = conn.connection.connection  # 获取 psycopg2 原生连接
+            with open(csv_path, 'r', encoding='utf-8') as f, pg_conn.cursor() as cur:
+                cur.copy_expert(copy_sql, f)
             
         return int(orderset_id)
 
@@ -152,8 +204,13 @@ class MarketAggregator:
         logging.info(f"正在对 orders_{table_suffix} 进行金融聚合统计...")
 
         # 从数据库读取原始数据
-        query = f'SELECT * FROM market.orders_{table_suffix} WHERE "orderSet" = :oid'
+        query = text(f'SELECT * FROM market.orders_{table_suffix} WHERE "orderSet" = :oid')
         df = pd.read_sql(query, self.engine, params={"oid": orderset_id})
+
+        # 无数据直接返回，避免后续聚合报空
+        if df.empty:
+            logging.warning(f"orderset {orderset_id} 无订单数据，跳过聚合")
+            return
 
         # 构造聚合标识
         df['what'] = df['region'].astype(str) + '|' + df['typeID'].astype(str) + '|' + df['buy'].astype(str).str.lower()
@@ -171,6 +228,8 @@ class MarketAggregator:
 
             total_vol = float(group['volume'].sum())
             threshold = total_vol * 0.05
+            if total_vol <= 0:
+                return float(group['price'].iloc[0])
             group['cumsum'] = group['volume'].cumsum()
             
             # 找到前 5% 的成交区间
@@ -179,6 +238,9 @@ class MarketAggregator:
                 return group['price'].iloc[0]
             price_arr = five_p_slice['price'].to_numpy(dtype=float, copy=False)
             vol_arr = five_p_slice['volume'].to_numpy(dtype=float, copy=False)
+            weight_sum = vol_arr.sum()
+            if weight_sum == 0:
+                return float(price_arr[0])
             return float(np.average(price_arr, weights=vol_arr))
 
         def weighted_average(prices: pd.Series) -> float:
@@ -195,11 +257,18 @@ class MarketAggregator:
             numorders=('price', 'count')
         )
         
-        # 应用 5% 算法
-        agg_df['fivepercent'] = df.groupby('what').apply(calculate_five_percent)
+        # 应用 5% 算法（按索引对齐，避免列名冲突）
+        fivepercent_series = df.groupby('what', group_keys=False).apply(calculate_five_percent).astype(float)
+        agg_df['fivepercent'] = fivepercent_series.reindex(agg_df.index).to_numpy()
         agg_df['orderSet'] = orderset_id
 
         # 3. 输出到 market.aggregates
+        what_keys = agg_df.index.astype(str).tolist()
+        if what_keys:
+            delete_stmt = text("DELETE FROM market.aggregates WHERE what IN :what_list")\
+                .bindparams(bindparam("what_list", expanding=True))
+            with self.engine.begin() as conn:
+                conn.execute(delete_stmt, {"what_list": what_keys})
         agg_df.to_sql('aggregates', self.engine, schema='market', if_exists='append', index=True)
 
         # 4. 同步到 Redis (响应毫秒级查询)

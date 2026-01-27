@@ -149,5 +149,5 @@ cython_debug/
 esi.local.cfg
 esi.prod.cfg
 *.cfg
-!*.cfg.example
+
 

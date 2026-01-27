@@ -10,6 +10,30 @@
 - 连接串：本地示例 `postgresql://postgres:your-local-password@localhost:5432/eve_db`；生产示例 `postgresql://postgres:your-prod-password@localhost:5432/your-prod-db`，容器访问宿主机可将 host 改为 `172.17.0.1`。
 - Git 忽略：`.gitignore` 已忽略所有非 `.cfg.example` 的 `.cfg`，请勿将真实凭证提交到仓库。
 
+## 🧰 常用 Docker 命令速查
+
+```bash
+# 基本状态
+docker ps -a
+docker images
+docker stats
+docker system prune -f
+
+# 进入容器 / 检查网络
+docker exec -it eve_backend /bin/bash
+docker network inspect eve-project_eve-network
+
+# 单个服务重启 / 重建并启动（不影响依赖）
+docker compose -f docker-compose.server.yml restart eve-backend-pg
+docker compose -f docker-compose.server.yml up -d --no-deps --build eve-backend-pg
+docker compose -f docker-compose.server.yml build eve-backend-pg
+
+# 日志查看
+docker compose -f docker-compose.server.yml logs -f --tail 200 eve-backend-pg
+docker compose -f docker-compose.server.yml logs --since 1h eve-backend-pg
+docker logs -f --tail 200 eve_backend
+```
+
 ## 📦 Dockerfile 详解
 
 ### 1. 后端 Dockerfile (`EVE-fastapi-backend/Dockerfile.pg`)
@@ -246,12 +270,12 @@ CMD ["python", "main.py"]
 
 ### docker-compose.local.yml（本地开发）
 
-```yaml
-version: '3.8'
-
+```bash
+# 启动所有服务（后台，加载 .env.server）
+docker-compose -f docker-compose.server.yml --env-file .env.server up -d
 services:
   # ==================== 数据库 ====================
-  eve-pg:
+docker-compose -f docker-compose.server.yml --env-file .env.server up
     image: postgres:15-alpine
     container_name: eve_db
     restart: always
