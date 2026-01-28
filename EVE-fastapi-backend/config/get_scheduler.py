@@ -159,10 +159,11 @@ class SchedulerUtil:
         """
         动态导入函数
 
-        :param func_path: 函数字符串，如module_task.scheduler_test.job
+        :param func_path: 函数字符串，如 module_task.scheduler_test.job 或 module_task.scheduler_test:job
         :return: 导入的函数对象
         """
-        module_path, func_name = func_path.rsplit('.', 1)
+        normalized_path = func_path.replace(':', '.')  # 兼容冒号分隔的路径
+        module_path, func_name = normalized_path.rsplit('.', 1)
         module = importlib.import_module(module_path)
         return getattr(module, func_name)
 

@@ -13,12 +13,23 @@ from sqlalchemy import create_engine, text, bindparam
 from configparser import ConfigParser
 import concurrent.futures
 
-# 日志配置
+# 日志配置：若主应用已初始化 logger，则额外补充文件句柄，确保定时任务场景也写入日志文件
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s: %(message)s',
     handlers=[logging.FileHandler("logs/market_aggregator.log"), logging.StreamHandler()]
 )
+os.makedirs("logs", exist_ok=True)
+root_logger = logging.getLogger()
+has_market_file_handler = any(
+    isinstance(h, logging.FileHandler) and getattr(h, 'baseFilename', '').endswith('market_aggregator.log')
+    for h in root_logger.handlers
+)
+if not has_market_file_handler:
+    file_handler = logging.FileHandler("logs/market_aggregator.log")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
+    root_logger.addHandler(file_handler)
 
 class MarketAggregator:
     def save_top_stations(self, orderset_id: int):
@@ -262,13 +273,30 @@ class MarketAggregator:
         agg_df['fivepercent'] = fivepercent_series.reindex(agg_df.index).to_numpy()
         agg_df['orderSet'] = orderset_id
 
+        # 明确声明索引列名，避免 pandas 默认使用 "index" 写入导致列错位
+        agg_df.index.name = 'what'
+
         # 3. 输出到 market.aggregates
         what_keys = agg_df.index.astype(str).tolist()
+        logging.info(f"[聚合写入前] what_keys 共 {len(what_keys)} 个样本，示例: {what_keys[:5]}")
         if what_keys:
-            delete_stmt = text("DELETE FROM market.aggregates WHERE what IN :what_list")\
-                .bindparams(bindparam("what_list", expanding=True))
+            # 使用 ANY(array) 语法删除，规避 IN 展开过长时的兼容性问题
+            pre_count_stmt = text("SELECT COUNT(*) FROM market.aggregates WHERE what = ANY(:what_array)")
+            delete_stmt = text("DELETE FROM market.aggregates WHERE what = ANY(:what_array)")
             with self.engine.begin() as conn:
-                conn.execute(delete_stmt, {"what_list": what_keys})
+                # 锁表以防并发插入导致删除不生效
+                conn.execute(text("LOCK TABLE market.aggregates IN SHARE ROW EXCLUSIVE MODE"))
+                pre_cnt = conn.execute(pre_count_stmt, {"what_array": what_keys}).scalar()
+                result = conn.execute(delete_stmt, {"what_array": what_keys})
+                post_cnt = conn.execute(pre_count_stmt, {"what_array": what_keys}).scalar()
+                logging.info(
+                    f"[聚合写入前] 目标键命中 {pre_cnt} 行；已删除 {result.rowcount} 行；删除后剩余 {post_cnt} 行"
+                )
+                if post_cnt:
+                    logging.error(
+                        f"[聚合写入前] 存在 {post_cnt} 行未删除的 what 键，终止写入以避免主键冲突，样本: {what_keys[:5]}"
+                    )
+                    raise RuntimeError("聚合写入前清理未完全，已中止写入以避免主键冲突")
         agg_df.to_sql('aggregates', self.engine, schema='market', if_exists='append', index=True)
 
         # 4. 同步到 Redis (响应毫秒级查询)

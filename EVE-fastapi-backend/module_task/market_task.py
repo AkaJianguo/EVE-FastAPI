@@ -1,6 +1,7 @@
 # 路径: your_project/module_task/market_task.py
 import logging
 import datetime
+import asyncio
 # 注意这里：因为代码扁平化了，导入路径可能需要微调，确保能搜到 eve_logic
 from .eve_logic.aggloader_v3 import MarketAggregator 
 
@@ -16,20 +17,18 @@ async def sync_market_data():
     start_time = datetime.datetime.now()
     
     try:
-        # 实例化逻辑核心类
-        aggregator = MarketAggregator()
-        
-        # 1. 执行数据抓取并利用 COPY 入库
-        orderset_id = aggregator.fetch_market_data()
-        logger.info(f"步骤1：数据抓取完成，批次 ID: {orderset_id}")
-        
-        # 2. 执行核心 Pandas 聚合计算
-        aggregator.run_aggregations(orderset_id)
-        logger.info(f"步骤2：批次 {orderset_id} 金融聚合计算完成")
+        # 将耗时的同步流程放入线程，避免阻塞主事件循环
+        def _run_sync_pipeline() -> int:
+            aggregator = MarketAggregator()
+            oid = aggregator.fetch_market_data()
+            logger.info(f"步骤1：数据抓取完成，批次 ID: {oid}")
+            aggregator.run_aggregations(oid)
+            logger.info(f"步骤2：批次 {oid} 金融聚合计算完成")
+            aggregator.save_top_stations(oid)
+            logger.info(f"步骤3：批次 {oid} 首页 Top 10 统计完成")
+            return oid
 
-        # 3. 统计全宇宙买卖最活跃的 Top 10 站点
-        aggregator.save_top_stations(orderset_id)
-        logger.info(f"步骤3：批次 {orderset_id} 首页 Top 10 统计完成")
+        orderset_id = await asyncio.to_thread(_run_sync_pipeline)
         
         end_time = datetime.datetime.now()
         duration = (end_time - start_time).seconds
