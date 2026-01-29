@@ -109,9 +109,9 @@ BACKEND_HOST=eve-backend-pg       # Nginx 代理目标服务名
 ```bash
 # ============ 编排层 - 数据库配置 ============
 DB_CONTAINER_NAME=eve_db_local    # 容器名称
-DB_USER=postgres                  # 本地用户
+DB_USER=eve_admin                  # 本地用户
 DB_PASSWORD=root                  # 本地密码
-DB_NAME=ruoyi-fastapi             # 本地数据库名
+DB_NAME=eve_db             # 本地数据库名
 DB_EXTERNAL_PORT=15432            # 避免冲突，使用 15432
 
 # ============ 编排层 - 端口映射 ============
