@@ -1,0 +1,21 @@
+{
+  "type_id": 4178,
+  "name": "男式'战壕'短靴(灰色)",
+  "description": "设计者：厄姆拉亚的圣达\n\n融合了经典军用样式和潮流商业造型，雅致灰色系新品。正宗小牛皮主料，柔顺脚踝设计配合加强底边。莱索烷材质夹层，舒适透气。减震内衬外加精良鞋跟，令您足下生辉。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

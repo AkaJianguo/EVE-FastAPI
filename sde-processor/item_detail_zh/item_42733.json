@@ -1,0 +1,21 @@
+{
+  "type_id": 42733,
+  "name": "女式贝雷帽(血袭者)",
+  "description": "戴上这顶制作精良，结实耐用的贝雷帽显示了你对血袭者的无限忠诚。 \n\n它简约而优雅的设计使得它的象征意义超越了时尚本身。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

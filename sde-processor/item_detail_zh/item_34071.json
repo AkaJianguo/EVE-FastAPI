@@ -1,0 +1,21 @@
+{
+  "type_id": 34071,
+  "name": "女式'刀锋'头饰(黑色)",
+  "description": "这件看上去十分犀利的漆黑色头饰的设计灵感来源于古老的艾玛传统，而近来皇室贵族们越来越多地在正式场合佩戴它，使得它倍受关注。\n\n它的外观高贵而华美——也有人说如魔鬼般邪恶，它简洁的外观给了旁观者许多不同的解读可能，这取决于人们的立场。它  可能是佩戴者头边的一圈光环，暗示着她的神圣天性。它也有可能是一对翅膀，象征着她终归天堂的灵魂。它还可能是两道尖刺，刺穿那些胆敢惹怒她的宵小之徒。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

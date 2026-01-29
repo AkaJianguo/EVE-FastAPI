@@ -1,0 +1,21 @@
+{
+  "type_id": 4039,
+  "name": "欧丁合成瞳(耀金右眼)",
+  "description": "欧丁合成瞳是追求品质生活的太空飞行员的最爱。纳米体构造游丝透镜组，配合尖端光学器件，悬浮于无菌凝胶质中，外部使用透明对苯二甲酸酯聚乙烯薄膜包覆。它可以在任何条件下替代人眼，提供所有光学功能。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "眼部饰品",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

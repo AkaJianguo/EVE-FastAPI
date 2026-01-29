@@ -1,0 +1,21 @@
+{
+  "type_id": 33383,
+  "name": "手臂 - '原型'(右)",
+  "description": "克隆飞行员的生活可以用人类与机器的纠缠不清来定义——少了其中一个，另一个就没什么用了。也许当他们融合在一起的时候就形成了一种新的生命体，剥去人类和机器的外皮，新的生命由此诞生。有些克隆飞行员强调他们身上的某些部件都是机器的（从小小的植入体到巨大的飞船），只不过是披上了人类的外衣（或是相反的方式）而已。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "纹身",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

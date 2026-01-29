@@ -1,0 +1,21 @@
+{
+  "type_id": 33776,
+  "name": "男式'攀升'中靴(白/金)",
+  "description": "穿着这双威武的皇室皮靴昂首挺立吧。主皮层由骨白色的柔软皮革制成，使用了专利的费多喷射处理使得它柔软而触感柔和。 \n\n同时外皮层是用金色的金属材质铆接的护腿板，即使在最恶劣的条件下也美观实用，使人感觉穿戴者不容小觑。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

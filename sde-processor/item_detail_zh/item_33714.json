@@ -1,0 +1,21 @@
+{
+  "type_id": 33714,
+  "name": "女式'礼冠'长靴(黑色)",
+  "description": "这双有着皇室风范的黑色长靴形状巨大，使人联想起神圣大教堂高大的拱门，给予飞行员强劲有力的双腿充分的空间。热保护专利技术使得它能适应任何环境。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

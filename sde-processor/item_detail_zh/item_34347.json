@@ -1,0 +1,28 @@
+{
+  "type_id": 34347,
+  "name": "男式'飞天'夹克(血袭者)",
+  "description": "设计者：未知\n\n这款夹克是受印塔基商业局的秘密委托所制，穿上它旗帜鲜明地表明你是血袭者的忠实拥护者。精选优质真皮，经过炭黑色印染精心打造，肩肘部的深红色搭配肩部同样深红色的铆钉装饰，显得格外突出。左胸前的血袭者标志，昭示着心之所向。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 2.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

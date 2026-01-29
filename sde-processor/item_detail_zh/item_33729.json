@@ -1,0 +1,35 @@
+{
+  "type_id": 33729,
+  "name": "女式'圣洁'连身裙(绿/金)",
+  "description": "穿上'圣洁'连身裙像个女神。紧身设计彰显您的尊贵气质。利落的V型领开口，框以细节丰富的金色花纹，营造出您外在的精致感。纯金色的上身在深绿色裙身的映衬下，延伸至肩部、腰部和裙边的金属线条，使人感受到正直、力量和美感。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 2.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

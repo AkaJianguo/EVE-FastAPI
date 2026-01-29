@@ -1,0 +1,21 @@
+{
+  "type_id": 40524,
+  "name": "男式'米雷尔'长裤(昇威)",
+  "description": "这款长裤设计出自联邦传奇时尚达人弗朗索瓦·米雷尔之手，作为男式“突击队”经典系列的推陈出新，这款外套吸引着时尚人士的目光。\n\n这款长裤为昇威财团高层度身定做，无疑展现出永不妥协的姿态，常见于组织内的重要人物穿着。\n\n哑光黑底、甜美蓝调加上铬银色抛光，提升了穿者的格调，暗示出上流社会的身份。与其它昇威财团服装搭配穿着，展现出独一无二的远见卓识。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

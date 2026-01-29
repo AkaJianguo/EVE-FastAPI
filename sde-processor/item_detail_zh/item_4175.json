@@ -1,0 +1,21 @@
+{
+  "type_id": 4175,
+  "name": "男式'精准'短靴(灰色)",
+  "description": "设计者：瓦洛\n\n再强力的指挥官也需要脚踏实地。最新军用制式“精准”短靴，搭配素雅灰色调。优质厚皮底层，具备沟槽抓地表面和金属护跟。鞋面经过维普咯柯特别处理，任何环境中都能保持亮泽。独家专利避震内垫，减轻行走及站立时的腿部疲劳。正面格调双拉链，带来加倍舒适度。让您在指挥时从容淡定。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

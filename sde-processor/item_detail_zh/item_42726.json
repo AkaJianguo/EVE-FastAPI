@@ -1,0 +1,21 @@
+{
+  "type_id": 42726,
+  "name": "男式帽子(血袭者)",
+  "description": "这款极富时尚感的鸭舌帽由某些舒适感上佳的顶级材料制成，弹性极佳。\n\n它的适用性也同样值得称道，无论是在外太空采矿哨站的蒸汽冷凝走廊中还是灿烂夺目的高级晚宴中都能给人留下深刻印象。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

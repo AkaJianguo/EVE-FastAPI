@@ -1,0 +1,21 @@
+{
+  "type_id": 4166,
+  "name": "男式'突击队'长裤(蓝色)",
+  "description": "设计者：厄姆拉亚的圣达\n\n无论是高级长官还是普通士兵，穿上深蓝色紧身“突击队”长裤后，都能更加专业地面对挑战。优质软羊毛混纺材质，正面褶皱预处理。舒适织造小腿裤管，保证行动便捷。整体勾勒的威武轮廓，让它深受各部队官兵的青睐。想展示您有多强力？请穿“突击队”长裤。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

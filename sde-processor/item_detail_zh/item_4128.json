@@ -1,0 +1,21 @@
+{
+  "type_id": 4128,
+  "name": "女式'胫甲'长靴(棕色)",
+  "description": "设计者：拉奈会所\n\n谁说军用装备一定要沉闷乏味？让您丰姿绰约的“胫甲”高跟长靴，优雅深秋棕色调，灵感来自经典的高筒步兵靴。光滑皮革齐膝包裹，配搭弹性后围，提供轻松穿脱体验。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

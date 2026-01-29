@@ -1,0 +1,21 @@
+{
+  "type_id": 33786,
+  "name": "男式'骑手'长裤(白金)",
+  "description": "这款'骑手'长裤的总体设计——包括正面修身裤腿的褶皱，多处边缘高贵的金色和纯白色形成的鲜明反差，以及上部的束腰细边——都清晰表明穿戴者出身显赫。 \n\n同时它也是为每一个浴火重生，毫不犹豫再次投身战斗的战士度身定做。无论死亡多少次不期而至，都不能成为他降低格调的理由。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,49 @@
+{
+  "type_id": 45521,
+  "name": "男式盖伦特联邦探索套装",
+  "description": "盖伦特联邦的这个探索套装版本主要由联邦政府机构人员使用，他们需要在多变但宜居的环境中进行作业。盖伦特联邦的指挥官发现穿着这种套装不论在行星、卫星、小行星、空间站还是太空环境中都能应对自如。\n\n\n\n印普罗集团看到了适应可变大气环境和引力的探索套装的商机，研发出了植入“印普罗-XS”的服装和装备系列产品。这套装备出众的环境适应科技，让它在新伊甸的多个军团迅速普及开来。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

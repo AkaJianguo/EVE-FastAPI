@@ -1,0 +1,21 @@
+{
+  "type_id": 4097,
+  "name": "男式'元帅'大衣",
+  "description": "设计者：瓦洛\n\n作为品位非凡的长官，您的衣柜里一定要有“元帅”大衣。无论是在战场上运筹帷幄，还是在后方视察防卫，它都能让您感到从容舒适，为人敬仰。专利聚合纤维和蚕丝混纺面料，保证衣物耐穿又柔顺。特别添加了针对严酷气候的柯露娜羊绒衬里，持久保暖。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

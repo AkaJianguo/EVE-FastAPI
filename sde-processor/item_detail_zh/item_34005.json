@@ -1,0 +1,21 @@
+{
+  "type_id": 34005,
+  "name": "Tattoo/ArmLeft/Sleeve15/Types/Sleeve15_F_Left.type",
+  "description": "Tattoo/ArmLeft/Sleeve15/Types/Sleeve15_F_Left.type",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "服饰",
+  "group_name": "纹身",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

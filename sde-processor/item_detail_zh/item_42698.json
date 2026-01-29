@@ -1,0 +1,21 @@
+{
+  "type_id": 42698,
+  "name": "女式'恐惧'贝雷帽（古斯塔斯）",
+  "description": "古斯塔斯的军事架构组织严密，由叛逃的加达里海军将领所创立。他们的“恐惧古斯塔斯”分部则是其最令人生畏的精英。\n\n佩戴此贝雷帽昭示着你对古斯塔斯的忠诚，简单的设计和刚劲的标识使其更显时尚之外的韵味。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

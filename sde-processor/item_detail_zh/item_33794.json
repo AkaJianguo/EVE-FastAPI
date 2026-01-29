@@ -1,0 +1,28 @@
+{
+  "type_id": 33794,
+  "name": "男式'影响力'夹克(深红色)",
+  "description": "这款夹克采用了优雅却凌乱的设计，穿上它，仿佛被带回到那个即使是最经验丰富的飞行员都需要损伤防护的年代。它表明穿戴者已经蓄势待发，随时准备迎接更多挑战。\n\n栗色的纳米束带在身前无缝锁定，选料薄而牢固的深红色侧面与覆盖上身主要接合处的衬垫相连。总体效果使人感觉穿戴者一定是在他人的血泊中浸过了。穿上它的飞行员，为战斗时刻装备着，不论死亡或是重生。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 2.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

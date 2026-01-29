@@ -1,0 +1,49 @@
+{
+  "type_id": 37818,
+  "name": "男式统合部'纸牌'救生服",
+  "description": "统合部的精英测试飞行员应该具备单独驾驶所有已知的护卫舰以及它们的衍生舰种的能力。“纸牌”救生服旨在最大限度地提高飞行员在统合部航空航天研究部门制定的严格和危险的验证情景下测试全新护卫舰配置时的生存机会。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

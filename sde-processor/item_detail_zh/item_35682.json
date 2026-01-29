@@ -1,0 +1,21 @@
+{
+  "type_id": 35682,
+  "name": "女式'博爱'T恤 YC117年",
+  "description": "这件极富盛名的衣着诞生于YC117年，并被赠送给了新伊甸的慈善机构。它是一种坚定的象征：尽管这世界总是冷酷无情，但是购买它的人仍虔心向善。骄傲地穿上它吧，你已经为素未谋面的人送去了光明。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

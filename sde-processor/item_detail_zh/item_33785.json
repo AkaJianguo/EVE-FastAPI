@@ -1,0 +1,21 @@
+{
+  "type_id": 33785,
+  "name": "男式'挺进者'长裤(黑色)",
+  "description": "穿着军用级别的、专利的'挺进者'长裤准备战斗吧。这款长裤选料轻便舒适，同时能够抵御任何艰苦环境的侵袭。该设计已被证实可以在小规模战斗、猛攻或者友军误伤时保护主动脉和重要器官。 \n\n面料选用专利的黑色皮革，与历经私人雇佣兵实战检验的防爆带浑然一体。所以即使您不幸蛋毁人亡，您也可以确信：任何搜刮您尸体的人都会知道您衣着有型。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

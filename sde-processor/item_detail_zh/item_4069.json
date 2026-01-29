@@ -1,0 +1,21 @@
+{
+  "type_id": 4069,
+  "name": "女式'印象'半裙(海蓝)",
+  "description": "设计者：拉奈会所\n\n优雅自信，源于莱索烷蛛丝质“印象”半裙。精致点缀的海蓝色系，佐以纯白饰边，衬托完美身材。更有隐形后兜，为您保持曼妙曲线。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

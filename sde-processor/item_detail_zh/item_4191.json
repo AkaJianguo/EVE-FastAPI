@@ -1,0 +1,21 @@
+{
+  "type_id": 4191,
+  "name": "男式'大道'背心(黑色)",
+  "description": "设计者：厄姆拉亚的圣达\n\n在拥有无数个定居星系的广袤宇宙中，勇敢的旅行者有时必须精简自己的装备。这件线条简练的黑色背心，包含经过特别处理的织物，保证胜任所有穿着方式：无论是家居休闲，还是激烈运动，都能让您保持潮流形象。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

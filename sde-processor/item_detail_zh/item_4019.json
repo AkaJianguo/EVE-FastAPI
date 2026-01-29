@@ -1,0 +1,21 @@
+{
+  "type_id": 4019,
+  "name": "女式'远足'长裤(黑/金线)",
+  "description": "设计者：瓦洛\n\n深黑色系搭配矿脉金线条，这条“远足”长裤，特别为注重服装品位、同时兼顾作战性能的女士设计。聚合羊毛混纺面料，内衬专利保温层，极端气候下，也能使您温暖舒适。它还具备动态重力加速度适应功能：自动调节松紧度，维持最佳腿部血液循环，让您自信应对任何不良环境。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

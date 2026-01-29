@@ -1,0 +1,13 @@
+{
+  "type_id": 42905,
+  "name": "女式格鲁汀战术护目镜",
+  "description": "格鲁汀集团在克隆技术领域的专业水准使得其能研发一些迎合克隆体使用者在各种环境下作业的特殊需求的物品。格鲁汀战术护目镜专为那些需要一系列过滤和光学增强功能的克隆体使用者而打造，比传统的光学植入体或视觉控制设备更加耐用且灵活性强。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "服饰",
+  "group_name": "眼部饰品",
+  "attributes": [],
+  "traits": []
+}

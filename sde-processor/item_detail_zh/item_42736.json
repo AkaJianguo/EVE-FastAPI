@@ -1,0 +1,21 @@
+{
+  "type_id": 42736,
+  "name": "男式'保护者'贝雷帽（加达里合众国）",
+  "description": "自从加达里立国以来，超级集团们的军事策略从来就是为保护集团利益而战。\n\n佩戴此贝雷帽昭示着你对加达里合众国的忠诚，简单的设计和刚劲的标识使其更显时尚之外的韵味。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

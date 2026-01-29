@@ -1,0 +1,21 @@
+{
+  "type_id": 33804,
+  "name": "女式'起源'外套(银色)",
+  "description": "这件“起源”外套充分展示了克隆飞行员的一项固有传统——外表是内在力量的最佳呈现。它外观顺滑柔软，非常适合深藏不露的人士穿着。它与一本记录了新伊甸无数秘密的编年史同步发售——必须承认，任何人在面对穿着这件外套的克隆飞行员时，都会觉得还是不要在这些不死杀神的面前隐瞒任何秘密为好。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

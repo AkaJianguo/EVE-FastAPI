@@ -1,0 +1,21 @@
+{
+  "type_id": 34081,
+  "name": "女式时尚异域人长靴",
+  "description": "经过加强后的长靴，可提供更具时尚感的防护，是勇于探索文明边缘之人的首选。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

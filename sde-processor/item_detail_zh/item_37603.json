@@ -1,0 +1,49 @@
+{
+  "type_id": 37603,
+  "name": "女式姐妹会高级战斗服",
+  "description": "供姐妹会军事人员穿着的服装。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": "不要求服饰类别",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

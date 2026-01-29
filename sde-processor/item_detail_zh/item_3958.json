@@ -1,0 +1,21 @@
+{
+  "type_id": 3958,
+  "name": "GDN-9\"夜行侠\"战斗护目镜",
+  "description": "GDN系列防护和战斗光学器材一开始并没有人气，只有少量加达里准军事部队采用——但是到了YC113年，全息动作连续剧<i>合众国展神威</i>令GDN-8护目镜一举成名。现在，全新登场的GDN-9\"夜行侠\"风尚护目镜，让您在拥有GDN-8酷炫外观的同时，畅享军用级别的电子和防辐射品质。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "眼部饰品",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

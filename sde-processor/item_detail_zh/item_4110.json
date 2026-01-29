@@ -1,0 +1,21 @@
+{
+  "type_id": 4110,
+  "name": "女式'格调'半裙(海蓝)",
+  "description": "设计者：瓦洛\n\n无论何处，您都是敏锐的精英。映着柔丝斜纹和倾角锁边，这条海蓝色“格调”半裙提醒众人，唯有您在掌控局面。崭新设计，带来极致舒适与品位。让您的主张尽在不言中。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "下装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

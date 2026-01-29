@@ -1,0 +1,21 @@
+{
+  "type_id": 45745,
+  "name": "男式'千里眼'增强护目镜",
+  "description": "就在发现计划交接给统合部之时，一个新的外行星狩猎计划在大众科学平台上着手实施。这个计划由统合部深空研究部的米歇尔·梅耶教授主导。他作为著名外行星学家的身份为这款带有其标志性色彩的“远视”加强型眼镜的复古典雅设计增光添彩不少。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "眼部饰品",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,21 @@
+{
+  "type_id": 34210,
+  "name": "男式'酷菲万王'T恤",
+  "description": "以一种最轻松闲适的姿态如同永生巨像一般屹立不倒，无论是在太空中还是地面上都是如此。\n\n这件物品不单单昭示着这位新潮而冷酷的穿着者能够自如驾驭有着毁天灭地的无穷力量的钢铁巨兽，还展示了他注重生活中的情趣，在离开太空舱的时候可能会好好享受一两罐酷菲呢。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

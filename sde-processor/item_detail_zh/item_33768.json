@@ -1,0 +1,21 @@
+{
+  "type_id": 33768,
+  "name": "女式'新伊甸公开赛 II'T恤 YC116年版",
+  "description": "这件舒适的衣服是第二届新伊甸公开赛的纪念品。新伊甸公开赛是克隆飞行员激烈争斗，一决雌雄的锦标赛。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

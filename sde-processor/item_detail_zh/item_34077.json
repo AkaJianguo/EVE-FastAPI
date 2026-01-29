@@ -1,0 +1,21 @@
+{
+  "type_id": 34077,
+  "name": "女式'蛛网'头饰(金色)",
+  "description": "这件优雅而装饰繁复的金色头饰，非常适合想要低调地表达自己克隆飞行员身份的人，同时还能提醒别人她就像这头饰一样，优雅、神秘、好似不属于这个世界。\n\n它是由稀有金属混以超薄可拉伸的原子结构制成。它可以抵御任何严苛的外部环境，同时能帮助头皮自由呼吸，但又足够柔软贴合，毫无阻碍。无论你是有强大的力量、出色的外交手腕、高贵的血统、还是如蛇蝎版狡诈，它都能帮你以俏皮的方式表达自我。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "服饰",
+  "group_name": "头饰",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

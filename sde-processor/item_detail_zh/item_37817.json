@@ -1,0 +1,21 @@
+{
+  "type_id": 37817,
+  "name": "男式'牧师'大衣(节日)",
+  "description": "节日版外套强调了穿者的王室风范。这款外套在栗红色背景上印有金色装饰图案。它适合博爱的人，他们承担着呵护灵魂的使命，不论战友还是芸芸众生，偶尔也为灵魂超度。在这个黑暗和危险的世界，他们的人生价值无可争辩。据说穿上它的人不害怕来自他人的眼光，不论赞赏还是仇视，因为他并非授命于凡尘。无论何时，他都无可阻挡。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "外套",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

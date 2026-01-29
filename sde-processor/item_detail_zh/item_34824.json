@@ -1,0 +1,21 @@
+{
+  "type_id": 34824,
+  "name": "男式'异星'T恤 YC117年版",
+  "description": "穿上这件精美的酷非纪念休闲衫，你别具一格。它专门为YC117年就异星突起进行的理性思维社团讨论会与会成员而设计。\n\n注：虽然这件T恤与朱庇特瞭望台的风格及其相似，但是它并不保证着装者能自由进出朱庇特瞭望台的区域。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

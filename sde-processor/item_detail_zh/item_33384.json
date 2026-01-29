@@ -1,0 +1,21 @@
+{
+  "type_id": 33384,
+  "name": "手臂 - '自然'(右)",
+  "description": "克隆飞行员的世界中并非只有杀戮，他们同样也会惊叹于大自然的雄奇壮美。有的人仿佛从这个纹身中看到了一只阿赫尔鸣禽啾啾叫着在空中翩然飞舞，有的人仿佛看到了一条猎奴犬机警地跳跃穿梭于烈日下的殖民地中，有的人仿佛看到了成千上万的星星从空中划过，还有极少数的人，坚持说他们看到了一只费多。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "服饰",
+  "group_name": "纹身",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

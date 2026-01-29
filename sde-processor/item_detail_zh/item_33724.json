@@ -1,0 +1,21 @@
+{
+  "type_id": 33724,
+  "name": "女式'海盗'高跟鞋(灰色)",
+  "description": "要说凌乱感和专利皮革圆滑、性感线条的完美结合，海盗'高跟鞋'无可媲美。鞋带绑到高处，穿着合脚，非常舒适。十字形状的皮带，连同醒目而优雅的搭扣，使它略带海盗气息。人们总是莫名地将这种气息和飞行员们联系在一起。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "鞋靴",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}

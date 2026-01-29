@@ -1,0 +1,21 @@
+{
+  "type_id": 4368,
+  "name": "女式'标准'衬衫(白色)",
+  "description": "设计者：厄姆拉亚的圣达\n\n以当代各大海军的B型军用服装为原型设计，这件对比强烈的骨白色与沙尘灰色结合的“标准”衬衫是您开始在新伊甸中的生活的最佳选择。它的设计理念是让您在平常工作中保持整洁的军人形象。经过特殊处理的面料可以有效抵抗舰船内常见的油渍和污渍沾染。暗色的装饰结合了华丽的臂章设计，彰显了它的独一无二，为您带来醒目的外表。",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "服饰",
+  "group_name": "上装",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "性别",
+      "unit_name": "1=男性 2=中性 3=女性"
+    }
+  ],
+  "traits": []
+}
