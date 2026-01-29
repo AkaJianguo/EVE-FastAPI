@@ -1,0 +1,21 @@
+{
+  "type_id": 33383,
+  "name": "Sleeve - 'Prototype' (right)",
+  "description": "The entwining of human and machine defines a capsuleer's life - each can't function without the other - and it may be argued that together they compose a new organism, one that shucks off both of its skins for fresh ones when needed. Some capsuleers try to express that even though parts of them are composed of machinery - from the implants in their heads all the way up to the massive ships they control - all of it is really only a cover for a human being. Or the other way around.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Tattoos",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

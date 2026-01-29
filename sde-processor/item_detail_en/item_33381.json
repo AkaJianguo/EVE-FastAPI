@@ -1,0 +1,21 @@
+{
+  "type_id": 33381,
+  "name": "Sleeve - 'Drone' (right)",
+  "description": "After they merged with the controls of gargantuan space vessels and moved beyond the confines of death itself, it's an open question whether capsuleers can even be considered purely human. This tattoo resembles one of New Eden's most nightmarish creatures, a relentless force of destruction whose mind has become entirely alien to the civilizations of New Eden. It's no wonder some capsuleers feel a strange fellowship with them.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Tattoos",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

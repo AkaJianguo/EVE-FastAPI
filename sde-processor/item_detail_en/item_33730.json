@@ -1,0 +1,35 @@
+{
+  "type_id": 33730,
+  "name": "Women's 'Sanctity' Dress (red/gold)",
+  "description": "Dress like a goddess in the 'Sanctity' dress, a tight fit that accentuates your divine features. A sharp V-neck cut is framed in a detailed faded golden tattoo, providing a delicate tone to your appearance, while a solid gold upper front on a maroon background is extended to metallic lines over the shoulder, waist and trim, giving the impression that the wearer is armored with righteousness, beauty, and power.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 2.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

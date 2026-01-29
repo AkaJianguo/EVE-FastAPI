@@ -1,0 +1,21 @@
+{
+  "type_id": 33736,
+  "name": "Women's 'Rocket' Dress (copper)",
+  "description": "With its curved, sinuous lines and high collar, the 'Rocket' dress is equally reminiscent of a rocket breaking through the atmosphere and a dagger piercing through skin. A single join snakes through a front showing a murky sky full of stars, overlaid with a fine shoulder brooch and terminating in a short V-shaped edge, while the hands are covered in bronze clasps overlaying a fine pair of brown gloves.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

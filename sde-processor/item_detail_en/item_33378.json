@@ -1,0 +1,21 @@
+{
+  "type_id": 33378,
+  "name": "Sleeve - 'Wreckage' (left)",
+  "description": "For an immortal master of dangerous technological wonders, it can be hard to retain or even recall the connection to the natural cycle of life. This tattoo is a reminder that death for a capsuleer, though only fleeting, is omnipresent and will always leave its mark, and that one person's precious, perfect engine of war will eventually - through accident, scheming, or a second's forgetfulness  - become someone else's wreckage to calmly pick clean.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Tattoos",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

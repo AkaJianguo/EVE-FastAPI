@@ -1,0 +1,21 @@
+{
+  "type_id": 33733,
+  "name": "Women's 'Rocket' Dress (glossy black)",
+  "description": "With its curved, sinuous lines and high black collar, the 'Rocket' dress is equally reminiscent of a rocket breaking through the atmosphere and a dagger piercing through skin. A single join snakes through the pitch-black front, overlaid with a fine shoulder brooch, and terminating in a short V-shaped edge, while the hands are covered in silver clasps overlaying a fine pair of black gloves.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

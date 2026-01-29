@@ -1,0 +1,21 @@
+{
+  "type_id": 33062,
+  "name": "Men's 'Red Star' T-shirt",
+  "description": "Stand out in a crowd with this crisp, elegant design, designed exclusively for those who want their wear to be casual and comfortable while simultaneously having it send a stark message of the celebration of freedom and brotherhood. This t-shirt, pitch black as the dark of space, is adorned with a single red star, standing as the symbol both of a dying sun in the last throes of its cooling embers, and a rebirth of life in star-lit New Eden.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

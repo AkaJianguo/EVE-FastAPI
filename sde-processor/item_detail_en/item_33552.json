@@ -1,0 +1,21 @@
+{
+  "type_id": 33552,
+  "name": "Men's 'Phanca' Cybernetic Arm (right)",
+  "description": "This item, whose full designator is the F-706.574 'Phanca' Cybernetic Arm, is unique among heavily mechanized capsuleer accoutrements in that rather than focusing primarily on the future, it draws on a dark part of ancient empire history - one that's either completely barbaric or unquestionably devout, depending who you ask.\n\nIts origins lie in an Amarr decree where a member of the oligarchy - who was whimsical, powerful and, it is speculated, quite astoundingly insane during the tail end of her life- demanded that all current and future heirs of a particular royal house have their right hand amputated. They acquiesced, but had the hands replaced with cybernetic models in a silver coating.\n\nThe first heir who suffered this fate took great pride in it, and his silver hand is on display in the open court of the Amarr Royal palace. When capsuleers - themselves the unquestionable elite of New Eden - started taking to cybernetic arms, it was only natural that this be one of the first models put into public use.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Prosthetics",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}
