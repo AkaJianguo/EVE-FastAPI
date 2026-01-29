@@ -1,0 +1,96 @@
+-- ----------------------------
+-- 20、联盟信息表
+-- ----------------------------
+DROP TABLE IF EXISTS eve_alliance;
+CREATE TABLE eve_alliance (
+    alliance_id bigint NOT NULL,
+    name varchar(100) NOT NULL,
+    ticker varchar(20) NOT NULL,
+    executor_corporation_id bigint,
+    creator_corporation_id bigint,
+    creator_id bigint,
+    date_founded timestamp(0),
+    faction_id bigint,
+    icon varchar(255) DEFAULT '',
+    status char(1) DEFAULT '0',
+    create_by varchar(64) DEFAULT '',
+    create_time timestamp(0) DEFAULT CURRENT_TIMESTAMP,
+    update_by varchar(64) DEFAULT '',
+    update_time timestamp(0),
+    remark varchar(500) DEFAULT NULL,
+    PRIMARY KEY (alliance_id)
+);
+
+COMMENT ON TABLE  eve_alliance IS '联盟信息表';
+COMMENT ON COLUMN eve_alliance.alliance_id IS '联盟ID (ESI返回)';
+COMMENT ON COLUMN eve_alliance.name IS '联盟全名';
+COMMENT ON COLUMN eve_alliance.ticker IS '联盟简称';
+COMMENT ON COLUMN eve_alliance.executor_corporation_id IS '执行军团ID';
+COMMENT ON COLUMN eve_alliance.creator_corporation_id IS '创建军团ID';
+COMMENT ON COLUMN eve_alliance.creator_id is '创建者ID';
+COMMENT ON COLUMN eve_alliance.date_founded IS '创立时间';
+COMMENT ON COLUMN eve_alliance.faction_id IS '阵营ID';
+COMMENT ON COLUMN eve_alliance.icon IS '联盟图标URL';
+COMMENT ON COLUMN eve_alliance.status IS '状态（0正常 1停用）';
+COMMENT ON COLUMN eve_alliance.create_by IS '创建者';
+COMMENT ON COLUMN eve_alliance.create_time IS '创建时间';
+COMMENT ON COLUMN eve_alliance.update_by IS '更新者';
+COMMENT ON COLUMN eve_alliance.update_time IS '更新时间';
+COMMENT ON COLUMN eve_alliance.remark IS '备注';
+
+
+-- ----------------------------
+-- 21、军团信息表
+-- ----------------------------
+DROP TABLE IF EXISTS eve_corporation;
+CREATE TABLE eve_corporation (
+    corporation_id bigint NOT NULL,
+    alliance_id bigint,
+    name varchar(100) NOT NULL,
+    ticker varchar(20) NOT NULL,
+    ceo_id bigint NOT NULL,
+    creator_id bigint,
+    member_count int4 DEFAULT 0,
+    tax_rate double precision DEFAULT 0,
+    date_founded timestamp(0),
+    description text DEFAULT NULL,
+    home_station_id bigint,
+    faction_id bigint,
+    shares bigint,
+    url varchar(255) DEFAULT '',
+    war_eligible boolean DEFAULT true,
+    icon varchar(255) DEFAULT '',
+    is_authorized char(1) DEFAULT '0',
+    status char(1) DEFAULT '0',
+    create_by varchar(64) DEFAULT '',
+    create_time timestamp(0) DEFAULT CURRENT_TIMESTAMP,
+    update_by varchar(64) DEFAULT '',
+    update_time timestamp(0),
+    remark varchar(500) DEFAULT NULL,
+    PRIMARY KEY (corporation_id)
+);
+
+COMMENT ON TABLE  eve_corporation IS '军团信息表';
+COMMENT ON COLUMN eve_corporation.corporation_id IS '军团ID (ESI返回)';
+COMMENT ON COLUMN eve_corporation.alliance_id IS '所属联盟ID';
+COMMENT ON COLUMN eve_corporation.name IS '军团全名';
+COMMENT ON COLUMN eve_corporation.ticker IS '军团简称';
+COMMENT ON COLUMN eve_corporation.ceo_id IS 'CEO Character ID';
+COMMENT ON COLUMN eve_corporation.creator_id IS '创建者ID';
+COMMENT ON COLUMN eve_corporation.member_count IS '成员数量';
+COMMENT ON COLUMN eve_corporation.tax_rate IS '税率';
+COMMENT ON COLUMN eve_corporation.date_founded IS '创立时间';
+COMMENT ON COLUMN eve_corporation.description IS '军团描述';
+COMMENT ON COLUMN eve_corporation.home_station_id IS '总部空间站ID';
+COMMENT ON COLUMN eve_corporation.faction_id IS '阵营ID';
+COMMENT ON COLUMN eve_corporation.shares IS '股份数量';
+COMMENT ON COLUMN eve_corporation.url IS '军团官网';
+COMMENT ON COLUMN eve_corporation.war_eligible IS '是否可被宣战';
+COMMENT ON COLUMN eve_corporation.icon IS '军团图标URL';
+COMMENT ON COLUMN eve_corporation.is_authorized IS '是否已授权（0否 1是）';
+COMMENT ON COLUMN eve_corporation.status IS '状态（0正常 1停用）';
+COMMENT ON COLUMN eve_corporation.create_by IS '创建者';
+COMMENT ON COLUMN eve_corporation.create_time IS '创建时间';
+COMMENT ON COLUMN eve_corporation.update_by IS '更新者';
+COMMENT ON COLUMN eve_corporation.update_time IS '更新时间';
+COMMENT ON COLUMN eve_corporation.remark IS '备注';

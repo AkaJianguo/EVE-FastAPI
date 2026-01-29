@@ -1,0 +1,24 @@
+# 1. 对齐生产环境 Python 版本，slim 镜像更轻量
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# 2. 安装连接 PostgreSQL 必须的系统库
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. 优化：先复制依赖文件并安装，利用 Docker 缓存加速构建
+COPY requirements-pg.txt .
+RUN pip install --no-cache-dir -r requirements-pg.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 【关键新增】 3.5 复制所有后端源代码到镜像的 /app 目录
+COPY . .
+
+# 4. 暴露后端端口
+EXPOSE 9099
+
+# 5. 启动命令：使用 python 直接运行 app.py 并传入开发参数
+# 如果你的 app.py 支持 uvicorn 封装，建议确认是否开启了 reload 模式
+CMD ["python", "app.py", "--env=dockerpg"]
