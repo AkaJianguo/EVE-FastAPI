@@ -143,3 +143,18 @@ cython_debug/
 # VSCode
 .vscode/
 
+
+# Node
+EVE-fastapi-frontend/node_modules/
+
+# Logs
+logs/
+*.log
+
+# Database
+postgres_data/
+
+# 其他常见忽略
+Thumbs.db
+.DS_Store
+
