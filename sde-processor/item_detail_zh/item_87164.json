@@ -1,0 +1,55 @@
+{
+  "type_id": 87164,
+  "name": "最终阶段",
+  "description": "",
+  "volume": 20.0,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 1.0,
+  "category_name": "天体",
+  "group_name": "效果光束",
+  "attributes": [
+    {
+      "attribute_name": "warpSpeedBonus",
+      "value": -30.0,
+      "categoryID": 7,
+      "display_name": "跃迁速度加成",
+      "unit_name": "%"
+    },
+    {
+      "attribute_name": "shieldBonusMultiplierRemote",
+      "value": 1.3,
+      "categoryID": 2,
+      "display_name": "护盾传输量倍增系数",
+      "unit_name": "x"
+    },
+    {
+      "attribute_name": "armorDamageAmountMultiplierRemote",
+      "value": 1.3,
+      "categoryID": 3,
+      "display_name": "远距维修量倍增系数",
+      "unit_name": "x"
+    },
+    {
+      "attribute_name": "maxLockedTargetsMultiplier",
+      "value": 0.5,
+      "categoryID": 6,
+      "display_name": null,
+      "unit_name": null
+    }
+  ],
+  "traits": [
+    {
+      "content": "<b>30%</b> 跃迁速度惩罚"
+    },
+    {
+      "content": "<b>30%</b> 远程护盾回充量加成"
+    },
+    {
+      "content": "<b>30%</b> 远程装甲维修加成"
+    },
+    {
+      "content": "<b>50%</b> 目标锁定数上限惩罚"
+    }
+  ]
+}
