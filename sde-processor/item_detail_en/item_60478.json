@@ -1,0 +1,63 @@
+{
+  "type_id": 60478,
+  "name": "Light Mutated Drone",
+  "description": "This light combat drone has been bizarrely altered by a mutaplasmid tool that uses both Triglavian and rogue drone technologies. While the resultant drone unit may be enhanced in various ways, and changed for the worse in others, it is certainly much more grotesque than its original form.\n\nTechniques developed for controlling ORE's successful 'Excavator' line of mining drones, based on pacified rogue drone technology, appear to work satisfactorily to restrict the rogue elements of the mutated drone. Then again, this <i>is</i> a combat drone equipped with adaptive tactical intelligence systems.",
+  "volume": 5.0,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 3000.0,
+  "category_name": "Drone",
+  "group_name": "Combat Drone",
+  "attributes": [
+    {
+      "attribute_name": "requiredSkill1",
+      "value": 24241.0,
+      "categoryID": 8,
+      "display_name": "Primary Skill required",
+      "unit_name": "typeID"
+    },
+    {
+      "attribute_name": "requiredSkill2",
+      "value": 60515.0,
+      "categoryID": 8,
+      "display_name": "Secondary Skill required",
+      "unit_name": "typeID"
+    },
+    {
+      "attribute_name": "requiredSkill3",
+      "value": 3436.0,
+      "categoryID": 8,
+      "display_name": "Tertiary Skill required",
+      "unit_name": "typeID"
+    },
+    {
+      "attribute_name": "requiredSkill1Level",
+      "value": 5.0,
+      "categoryID": 8,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "requiredSkill2Level",
+      "value": 1.0,
+      "categoryID": 8,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "requiredSkill3Level",
+      "value": 5.0,
+      "categoryID": 8,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "techLevel",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Tech Level",
+      "unit_name": "Level"
+    }
+  ],
+  "traits": []
+}
