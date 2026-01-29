@@ -1,0 +1,21 @@
+{
+  "type_id": 4050,
+  "name": "Looking Glass Monocle Interface (left/gold)",
+  "description": "An extremely rare and sought-after implant available only to the wealthy and powerful of New Eden, the Looking Glass monocle interface offers advanced vision augmentation beyond the capabilities of all comparable prosthetics or upgrades. Full-spectrum optic weave filters, nanofiber refraction lenses, an enhanced NeoCom uplink, and a blackbox holovid recorder linked directly to the memory centers in the temporal lobe are just some of its groundbreaking options. When combined with the specialized training and equipment unique to capsuleers, the Looking Glass is an efficient interfacing tool, not to mention a dramatic fashion statement.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Eyewear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

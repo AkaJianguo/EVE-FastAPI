@@ -1,0 +1,21 @@
+{
+  "type_id": 37866,
+  "name": "Men's 'Serpentis' T-shirt (olive/black)",
+  "description": "Manufactured from the latest para-aramid synthetic fiber impregnated weave, this form fitting t-shirt provides both insulation and warmth in naturally cool off-planet environments, as well as being strong enough to act as rudimentary armor against basic stabbing and slashing attacks. This particular shirt has been manufactured in the colors of the Serpentis Corporation, and is part of the standard issue equipment for all Serpentis security and enforcement personnel to be worn beneath their ballistic armor and flak protection.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

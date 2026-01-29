@@ -1,0 +1,21 @@
+{
+  "type_id": 36483,
+  "name": "Men's 'Hephaestus' Shirt (cyan)",
+  "description": "Designer: Vallou Outerwear\nWhen Outer Ring Excavations was looking to update and modernize their crew uniforms, they relied on Vallou Outerwear to take on the challenge. Vallou upper management was so impressed with the result, they commissioned a limited range of custom variants, known as the “Hephaestus” collection. \nThis functional but high tech shirt retains the utilitarian look of the original uniforms, but with much higher material quality and attention to detail. Each shirt is crafted from cyan-shaded poly fabrics that are extremely durable yet comfortable enough to wear for extended periods.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

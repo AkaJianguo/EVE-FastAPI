@@ -1,0 +1,21 @@
+{
+  "type_id": 4110,
+  "name": "Women's 'Structure' Skirt (marine)",
+  "description": "Designer: Vallou\n\nLook sharp and competent in any situation. Our marine \"Structure\" skirt wraps you in soft silk-blend twill with angled silver piping to remind people who's in charge. Our latest workforce design is the ultimate in everyday comfort and style. Make a statement without saying a word.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

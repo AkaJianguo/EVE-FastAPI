@@ -1,0 +1,21 @@
+{
+  "type_id": 34086,
+  "name": "Women's 'Eternity' Boots (Black/Red)",
+  "description": "Designer: Sennda of Emrayur\n\nWith every stunning outfit there is a pair of boots to tie the look together. Each piece is handcrafted from the softest genetically enhanced livestock leather, dyed a luxurious black with red and white detailing, and embedded with specialized nanofibers to give it a unique brilliant finish. Paired with the 'Eternity' suit and top, these striking boots are the culmination of a look designed to turn heads.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

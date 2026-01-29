@@ -1,0 +1,21 @@
+{
+  "type_id": 41575,
+  "name": "Women's \"Mirelle\" Upwell Executive Spectacles",
+  "description": "Designed with a retro Gallente frame from legendary Federal fashionista Francois Mirelle, these bifocals are themed to appeal to those interested in both a functional and stylish look without the need for ocular implants.\nWith a titanium weaved carbon composite frame, alloy hinge pins and silicate glass lenses, these traditional spectacles not only look the part, but also come with a lifetime guarantee* and are designed with the most extreme and rigorous use in mind.\n\n*Guarantee based on Interstellar Average Standard human lifespan of 160.25 years.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Eyewear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,21 @@
+{
+  "type_id": 34059,
+  "name": "Men's 'Nova' Headwear (silver)",
+  "description": "This regal and complex piece of headwear is, as the perspicuous viewer may have suspected, of Amarr origin. It derives in part from a type of cap that certain Amarr missionaries would routinely wear during excursions into unknown territories; part for protection against the elements, part to identify themselves with a type of clothing they felt certain would not be found in heathen places, and part, the myth goes, to help frighten the locals into submission.\n\nThe intricate and highly decorated headwear, silver as the twin moons over Athra, is emblematic of the infinite machineries of our god and the vast expanses it represents. Moreover, it's complete with the powerful arms reaching from the origin of thought, consciousness and the waking world, spreading out to remind the wearer that the Lord's grasp on our world is absolute.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "Apparel",
+  "group_name": "Headwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

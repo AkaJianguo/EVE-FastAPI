@@ -1,0 +1,49 @@
+{
+  "type_id": 37600,
+  "name": "Women's Genolution Combat Suit",
+  "description": "Genolution’s expertise in cloning technology led it to develop a small range of items adapted for the special needs of clone users operating in a range of environments. The Genolution Combat Suit is designed to integrate comfortably and seamlessly with clones adapted for neural interface linking with a range of systems, including capsule neural interfaces.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

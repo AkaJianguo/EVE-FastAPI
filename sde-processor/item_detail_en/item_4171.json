@@ -1,0 +1,21 @@
+{
+  "type_id": 4171,
+  "name": "Men's 'Commando' Pants (red/black)",
+  "description": "Designer: Sennda of Emrayur\n\nWhether ranking officer or rank-and-file, look prepared and professional in our gartered \"Commando\" pants. Our classic soft wool blend affords comfort, and the pleated front and comfort-woven lower legs offer a martial silhouette contrasting a martial streak of bright red with a material of the purest midnight black along with an ease of movement that would please any career soldier. Show them you mean business: Go Commando.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

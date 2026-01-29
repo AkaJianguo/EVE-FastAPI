@@ -1,0 +1,21 @@
+{
+  "type_id": 4129,
+  "name": "Women's 'Greave' Boots (matte brown)",
+  "description": "Designer: House of Ranai\n\nWho says military dress has to be unflattering? Step out in style in our \"Greave\" high-heeled boots, inspired by the gaiters of yesteryear's foot-soldier. Slick leather wraps up to your knee, while the structured flexible ribbing at the back provides for easy on-and-off.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

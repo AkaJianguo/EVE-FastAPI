@@ -1,0 +1,21 @@
+{
+  "type_id": 40522,
+  "name": "Men's 'Mirelle' Upwell Executive Coat",
+  "description": "Designed by legendary Federal fashionista Francois Mirelle, this fresh take on the already classic men’s 'Esquire' series coat demands attention from those with an eye for style.\nInspired and themed to fit the brand and style of Upwell Consortium executives, this coat undoubtedly leaves an uncompromising impression and is often worn by senior figures within the organization.\nWhile its matte black exterior, luscious blue hue and chrome silver finishes uplift the viewer into a world of high class society, the Upwell Consortiums personal touch is what truly ties this piece together.\n\n<i>Upwell – Building Dreams</i>",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

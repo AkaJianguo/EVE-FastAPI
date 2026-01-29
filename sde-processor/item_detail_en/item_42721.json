@@ -1,0 +1,21 @@
+{
+  "type_id": 42721,
+  "name": "Men's 'Pithum' Beret (Guristas)",
+  "description": "The Guristas pirates are highly organized on military lines, having been founded by renegade Caldari Navy officers, and their ‘Pithum’ units are a feared presence in Guristas deadspace outposts and high value sites.\nWearing this beret displays your loyalty to the Guristas, with a simple design and powerful symbolism rising above more than just a fashion statement.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Headwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

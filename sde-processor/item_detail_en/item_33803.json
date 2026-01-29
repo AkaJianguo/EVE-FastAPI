@@ -1,0 +1,21 @@
+{
+  "type_id": 33803,
+  "name": "Men's 'Source' Coat (black)",
+  "description": "Hewing back to an established capsuleer tradition that power is best wielded in terrifyingly good style, this \"Source\" coat has a sleek, lithe look that befits the person who knows far more than they let on. It was released alongside an exclusive compendium that granted access to secret information on the world of New Eden - although it must be admitted that anyone confronted with a capsuleer, particularly one dressed in this fashion, won't find it too hard to be convinced that no information should be kept secret from these angry, immortal gods of the skies.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,21 @@
+{
+  "type_id": 34005,
+  "name": "Sleeve - 'Bloodfire' (Left)",
+  "description": "<i>These words art mine,\nBut before they wert mine,\nThey fell from an iron mask,\nBeneath eyes like fire.</i>\n\n- Sanicanonical Scriptures, Book of Redemption 1:7",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "Apparel",
+  "group_name": "Tattoos",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 2.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

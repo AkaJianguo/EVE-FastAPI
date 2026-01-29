@@ -1,0 +1,21 @@
+{
+  "type_id": 42740,
+  "name": "Women's 'Protector' Beret (Caldari State)",
+  "description": "Ever since the formation of the Caldari State, the military strategy of the megacorporations that collectively rule it has always geared towards protecting the corporate way of life.\nWearing this beret displays your loyalty to the Caldari State, with a simple design and powerful symbolism rising above more than just a fashion statement.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Headwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

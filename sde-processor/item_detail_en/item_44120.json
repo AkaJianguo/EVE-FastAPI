@@ -1,0 +1,21 @@
+{
+  "type_id": 44120,
+  "name": "Women's YC119 Yoiul Festival T-shirt",
+  "description": "The Yoiul Festival celebrates the start of the New Year according to the New Eden Standard Calendar. The festival is widely promoted by CONCORD as a time to reflect on unity and peace across New Eden. The YC119 Yoiul Festival T-shirt colorfully and stylishly expresses this message for all to see.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

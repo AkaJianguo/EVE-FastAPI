@@ -1,0 +1,21 @@
+{
+  "type_id": 33753,
+  "name": "Women's 'Poise' Pants (glossy red)",
+  "description": "A brisk design aimed at attracting attention through elegance, the 'Poise' pants have a shiny surface of stark red that looks stylish, and yet is able to withstand any and all rigors of capsuleer life.\n\nEnjoy the comfort of their casual and outgoing style while knowing that nothing can stand in your way.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

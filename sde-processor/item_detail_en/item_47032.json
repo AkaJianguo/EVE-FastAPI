@@ -1,0 +1,21 @@
+{
+  "type_id": 47032,
+  "name": "Men's Empyrean Dragons Jacket",
+  "description": "Elegantly tailored and embroidered to the highest standards, this jacket calls forth the power and wisdom of heavenly creatures from Jin-Mei mythology. Any capsuleer wearing such a garment is surely celebrating the awesome capabilities and reach of the pilots of New Eden. Alternatively, they may simply be attending a show at the Jin-Mei masked opera",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

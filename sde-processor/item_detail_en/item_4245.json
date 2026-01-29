@@ -1,0 +1,21 @@
+{
+  "type_id": 4245,
+  "name": "'Silvershore' Greatcoat",
+  "description": "Designer: Vallou (Limited Collection)\n\nThe distinctive design of Vallou's officer coats is inspired by historical images of high-ranking military members from the heyday of the Garoun Empire, ancestors of the Gallente Federation. The most prestigious of these was the silver-lined leather coat worn by the Admiral of the Fleet, arguably the most important official in a kingdom so heavily reliant on maritime dominance.\n\nOne of the rarest and most sought-after items in Vallou's renowned Limited Collection, the Silvershore greatcoat is also one of the most expensive articles of clothing ever created. From the top-quality Caillian leather to the burnished platinum clasps, every aspect of this stately raiment has been carefully shaped to evoke the mystery, grandeur and peril of the unexplored.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

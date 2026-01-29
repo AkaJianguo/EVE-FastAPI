@@ -1,0 +1,21 @@
+{
+  "type_id": 4200,
+  "name": "Men's 'Street' Shirt (white)",
+  "description": "Designer: Sennda of Emrayur\n\nIn a world that spans countless settled solar systems, the hardy traveler must sometimes bring his accoutrements back to basics. Made of a specially treated blend guaranteed to withstand an entire spectrum of potential uses, from relaxation to intense activity, this white tank top bears the clear, classic lines that distinguish it as a true fashion item.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

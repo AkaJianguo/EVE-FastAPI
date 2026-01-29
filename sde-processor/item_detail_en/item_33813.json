@@ -1,0 +1,21 @@
+{
+  "type_id": 33813,
+  "name": "Women's 'Quafe' T-shirt YC 116",
+  "description": "Stalk the halls in your elegant new Quafe Commemorative Casual wear, designed exclusively for attendees of the YC 116 Inner Zone Shipping Conference.\n\nNote: While IZS is renowned for its safe shipping methods and extensive reach, the wearer of this shirt is unfortunately not entitled to free interstellar transport on an IZS flight for them and their accompanying family members or friends. They will, however, automatically and without question be seated as far from any Fedos in cargo as is humanly possible.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

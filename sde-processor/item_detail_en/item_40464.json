@@ -1,0 +1,21 @@
+{
+  "type_id": 40464,
+  "name": "Men's Virtuality Biotechnician Coat",
+  "description": "Much medical research in New Eden involves extensive modelling and simulation using virtual environments. Virtuality Biotechnicians specialize in bridging the gap between the real and the virtual in complex fields such as immunology and epidemiology. This work has become increasingly important as the number of highly dangerous pathogens afflicting colonies and various space-industrial locations has multiplied over the decades.\n\nIdeally, the work of Virtuality Biotechnicians seeks to predict the emergence of new biosecurity threats by modelling existing environments and simulating mutation paths the extant biology could take. However, more often than not, virtual biotech investigations must react to developing situations and support remedial work using data provided by emerging pathogen research efforts, such as the Project Discovery Flow Cytometry program.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

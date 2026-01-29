@@ -1,0 +1,28 @@
+{
+  "type_id": 34173,
+  "name": "Women's 'Gunner' Jacket (ORE)",
+  "description": "Advertise your stature as the terror of the celestial skies in this sleek, comfortable jacket. A dark pillar rises in front and back to underline your undeniable and unyielding presence, while armbands and epaulettes in matte gold give you the commanding appearance you deserve. Finally, the logo of ORE advertises your proud support for the only faction that matters.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 2.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

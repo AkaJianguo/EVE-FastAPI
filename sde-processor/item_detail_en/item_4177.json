@@ -1,0 +1,21 @@
+{
+  "type_id": 4177,
+  "name": "Men's 'Trench' Boots (brown)",
+  "description": "Designer: Sennda of Emrayur \n\nClassic military style and boardroom chic come together in the natural, rugged brown of our latest footwear. Crafted of genuine calfskins, reinforced around the foot and supple at the ankle, our classic military boot features Resothane inserts for breathability. Shok-Lite lining and a subtly stacked heel provide essential support, so you never have to worry when you're thinking on your feet.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

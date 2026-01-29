@@ -1,0 +1,21 @@
+{
+  "type_id": 40527,
+  "name": "Women's 'Mirelle' T-Shirt (Upwell)",
+  "description": "Designed by legendary Federal fashionista Francois Mirelle, this T-shirt is tailored to blend in perfectly with the other garments belonging to the Upwell Consortiums clothing line.\nPerfect for almost every situation, its simplicity and class is only matched by the statement made by proudly displaying the signature logo embellishment.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

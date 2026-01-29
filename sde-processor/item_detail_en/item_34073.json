@@ -1,0 +1,21 @@
+{
+  "type_id": 34073,
+  "name": "Women's 'Spiderweb' Headwear (metallic)",
+  "description": "This elegant, intricately decorated lacework with a metallic sheen is a perfect match for the pilot who wants her bodily decorations to have a nice undertone of her time in the capsule, while simultaneously reminding the lucky onlookers that she is, just like the decoration, elegant, cryptic, and not quite of this world.\n\nThe material is a delicate mesh of rare metals intermixed with sheets of superthin, stretchable atomic structures. It's strong enough to withstand any rigors and to help the head's skin breathe easy, while being supple enough to follow along with even the most minute shifts in expression; all the more for a lady of immense power, diplomacy, class and - for a select few - immeasurable deviousness, to slyly express her thoughts to the world.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "Apparel",
+  "group_name": "Headwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

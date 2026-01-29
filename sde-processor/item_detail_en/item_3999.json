@@ -1,0 +1,21 @@
+{
+  "type_id": 3999,
+  "name": "Women's 'Impress' Skirt (black wax)",
+  "description": "Designer: House of Ranai\n\nMove with confidence in our two-toned Resothane and spider-silk blend \"Impress\" skirt. Subtle detailing flatters the figure in contrasting tones of professional blacks and greys, complete with a waxy sheen that catches any light, while unobtrusive back pockets preserve the slim-line silhouette.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

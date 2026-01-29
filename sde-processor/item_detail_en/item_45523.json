@@ -1,0 +1,49 @@
+{
+  "type_id": 45523,
+  "name": "Men's SOE Expeditionary Suit",
+  "description": "Adapted for Sisters of EVE expeditionary work, this exploration suit features the signature SOE color scheme and a number of modifications particular to the needs of the SOE's scientific field teams.\n\nSeeing an opportunity in the market for variable atmosphere and gravity exploration gear, the Impro corporation developed its 'Impro-XS' integrated clothing and equipment line. The gear's superior environmental adaptation technology resulted in a rapid take up from various corporations across New Eden.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory",
+      "value": 25.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingAlsoCoversCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": null,
+      "unit_name": null
+    },
+    {
+      "attribute_name": "clothingRemovesCategory2",
+      "value": 22.0,
+      "categoryID": 0,
+      "display_name": "Does Not Require Clothing Type",
+      "unit_name": null
+    }
+  ],
+  "traits": []
+}

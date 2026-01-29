@@ -1,0 +1,21 @@
+{
+  "type_id": 34051,
+  "name": "Women's 'Hover' Tights (opaque gray)",
+  "description": "These opaque gray seamed tights, casual and comfortable as they are, were in fact created from a material previously used by Sisters of EVE rescue squads when doing excavations in highly unstable areas. For the Sisters, the material was interwoven into an complex rope mechanism deployed whenever something (or someone inside something) needed to be pulled out with such immense force that every single supporting structure in the area might collapse. In all their rescue operations, the rope itself has never broken.\n\nIn short, the material is light, porous, and damn near unbreakable, retaining its shape without strangling the legs or being overstretched after removal, and it may be used for even the most vigorous physical activities with no ill effect.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.1,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

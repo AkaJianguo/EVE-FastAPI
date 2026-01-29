@@ -1,0 +1,21 @@
+{
+  "type_id": 4066,
+  "name": "Women's 'Quafe' T-shirt YC 113",
+  "description": "Strut around in style with your comfortable new Quafe Commemorative Casual Wear, designed exclusively for attendees of the YC 113 Impetus Annual Holoreel Convention.\n\nNote: Quafe Commemorative Casual Wear is not a protective device and is intended for cosmetic use only.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

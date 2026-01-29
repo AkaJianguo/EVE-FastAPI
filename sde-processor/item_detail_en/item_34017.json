@@ -1,0 +1,21 @@
+{
+  "type_id": 34017,
+  "name": "Women's 'Vise' Cybernetic Arm (matte black left)",
+  "description": "The F-512.185 model 'Vise' Cybernetic Arm is the latest in naturalistic technologies that aim to enhance the human experience rather than cause - or worsen - a disconnect from reality. As such, its components have been carefully designed to ensure that they operate at a level of efficiency that is pleasing and empowering to the human mind, while not going too far beyond that level.\n\nFor instance, there are no unwieldy mechanical joints visible anywhere on the device. The shoulder is instead covered with a number of tiny clamps whose design conveys the sinuous curved lines of capsuleer beauty while simultaneously ensuring the shoulder has more than its full range of mobility. The elbow, likewise, appears more human than machine, thanks in good part to the superstrong stretchable material that covers it entirely in colors of deepest night. Moreover, some of the traditionally larger muscles have replaced by full metal covers, as if they were turrets waiting to be awakened.\n\nThe hand on the Arm resembles a glove, and its delineated fingers in pure black are delicate enough to feel even the slightest change of pressure in the air. The hand's internal sensors render it so nimble that it can hold on to almost anything, even the slightest wisp of material, without leaving a mark; yet so strong that the only time its grip can be forced against the owner's will to open, the rest of its owner will long since have been separated from the Arm.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Prosthetics",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

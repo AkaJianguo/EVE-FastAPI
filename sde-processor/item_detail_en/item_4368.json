@@ -1,0 +1,21 @@
+{
+  "type_id": 4368,
+  "name": "Women's 'Sterling' Dress Blouse (white)",
+  "description": "Designer: Sennda of Emrayur\n\nModeled after the Class B military clothing found in several modern navies, this sharply contrasted bone white and dusty gray \"Sterling\" dress blouse is a perfect way to begin your travels in New Eden. \n\nIt is designed to cope with the realities of daily service while maintaining the image of an orderly fighting force. Our material blends are specially treated to resist staining, even tough grease and oil stains common on modern starships. \n\nDark thread highlights combine with a magnificent chevron design, unique to this particular item, to finish the high-contrast look.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

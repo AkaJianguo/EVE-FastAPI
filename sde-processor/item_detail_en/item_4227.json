@@ -1,0 +1,21 @@
+{
+  "type_id": 4227,
+  "name": "Women's 'Avenue' Shirt (lined brown)",
+  "description": "Designer: Sennda of Emrayur\n\nIn a world that spans countless settled solar system, a traveler may undergo any number of discomforts, worries and uncertainty. The basics, then, must be kept simple, reliable, and elegant in design. Made of a specially treated blend guaranteed to withstand an entire spectrum of potential uses, from relaxation to intense activity, this lined brown tank top brings sturdy comfort wherever it is worn.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,21 @@
+{
+  "type_id": 37816,
+  "name": "Women's 'Rocket' Dress (festive)",
+  "description": "With its curved, sinuous lines and high collar, the 'Rocket' dress is equally reminiscent of a rocket breaking through the atmosphere and a dagger piercing through skin. A new festive release features a single join through the maroon patterened front, overlaid with a fine shoulder brooch, and terminating in a short V-shaped edge, while the hands are covered in gold clasps overlaying a fine pair of bronze gloves.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

@@ -1,0 +1,21 @@
+{
+  "type_id": 4237,
+  "name": "Men's 'Esquire' Coat (matte green)",
+  "description": "Designer: House of Ranai\n\nIn the world of boardroom politics, maintaining a commanding presence is essential. Lead from the front in our dual-layered resothane and spider-silk \"Esquire\" coat. The bold, clean lines of our latest design in a natural matte green offer you that sleek, tailored, and uncompromising impression; embossable molded-leather sleeves allow you to display your corporate rank for all to see. The contrasting yoke broadens the shoulders for a military-sharp appearance that will guarantee their undivided attention.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

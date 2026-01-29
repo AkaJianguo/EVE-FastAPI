@@ -1,0 +1,21 @@
+{
+  "type_id": 42726,
+  "name": "Men's Cap (Blood Raiders)",
+  "description": "This highly stylish front facing cap retains a certain flexibility whilst being constructed from some of the finest and most comfortable materials.\nIts fashion flexibility is also to be noted, befitting from steam condensed corridors in an outer rim mining outpost, up to making a certain, specialized impression at a crystal gala ball.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": null,
+  "category_name": "Apparel",
+  "group_name": "Headwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

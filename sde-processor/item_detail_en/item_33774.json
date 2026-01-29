@@ -1,0 +1,21 @@
+{
+  "type_id": 33774,
+  "name": "Men's 'March' Boots (Blue)",
+  "description": "These shimmering blue shoes were made for walking, and will easily carry the wearer through the most rugged of terrain anywhere in the cluster. Metal alloy clasps on the side ensure a firm, tight fit with plenty of support for the ankle without restricting movement, while laces at the top help the boots grip onto the shin and keep the shoes dry in case of adverse weather raining from above. \n\nThe front center and the sides are made of a rainproof, breathable material that make these boots a comfort to walk in. The front layer covering the instep, meanwhile, is made of nanoalloy composites that will keep the wearer from harm while making it eminently possible, through the medium of a well-aimed kick, for them to cause grievous damage to others, should the occasion demand it.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

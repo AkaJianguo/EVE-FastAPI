@@ -1,0 +1,21 @@
+{
+  "type_id": 4008,
+  "name": "Men's 'Lockstep' Boots",
+  "description": "Designer: House of Ranai\n\nLife on the cutting edge doesn't have to be harsh. Our \"Lockstep\" military gentleman's boots enfold your feet in the dark, muted colors of soft genuine leather, with reinforced toes and metal heel caps for protection. Pressure-sensitive gel insoles provide comfort and regulate temperature, while our patented limited-magnetic closure ensures a comfortable, custom fit.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

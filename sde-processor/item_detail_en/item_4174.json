@@ -1,0 +1,21 @@
+{
+  "type_id": 4174,
+  "name": "Men's 'Precision' Boots (brown)",
+  "description": "Designer: Vallou\n\nEven the strongest commander needs support. Our \"Precision\" collection introduces the latest in military style with these natural, rugged brown uniform boots. Polished leather outer-soles conceal a rugged grip and metal heel-caps; Veproco-treated leather uppers maintain a sleek shine no matter the environment. Our patented shock-resistant inner cushioning reduces leg strain when you need to stay on your feet, and the dual-zip front improves fit and comfort without sacrificing style. Command in confidence.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Footwear",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

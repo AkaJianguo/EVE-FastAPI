@@ -1,0 +1,21 @@
+{
+  "type_id": 4054,
+  "name": "Women's 'Executor' Coat",
+  "description": "Designer: House of Ranai\n\nIn today's cutthroat political environment, maintaining a commanding presence is essential. Lead from the front in our high-collared Resothane and spider-silk \"Executor\" coat. The bold, clean lines of our latest design offer you that sleek, tailored, and uncompromising impression. The contrasting yoke and black silk detailing build a military-sharp appearance that will guarantee their undivided attention.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

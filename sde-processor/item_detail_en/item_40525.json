@@ -1,0 +1,21 @@
+{
+  "type_id": 40525,
+  "name": "Women's 'Mirelle' Pants (Upwell)",
+  "description": "Designed by legendary Federal fashionista Francois Mirelle, this fresh take on the already classic women's 'Excursion' series demands attention from those with an eye for style.\nInspired and themed to fit the brand and style of Upwell Consortium executives, these pants undoubtedly leave an uncompromising impression and are often worn by senior figures within the organization.\nWhile its matte black, luscious blue hues and chrome silver finish uplift the viewer into a world of high class society, wearing these in combination with the other Upwell Consortiums clothing range makes a profound statement like no other.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Bottoms",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

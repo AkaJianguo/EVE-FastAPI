@@ -1,0 +1,21 @@
+{
+  "type_id": 4068,
+  "name": "Men's 'Sterling' Dress Shirt (Ishukone Special Edition)",
+  "description": "Designer: Sennda of Emrayur\n\nMost commonly worn by officers of Ishukone Watch, this crisp, stylized military uniform shirt bears their distinctive mark. Along with their variant of the Scorpion-class battleship, the Ishukone Watch line of clothing reveals a growing diversity in the corporation's offering. As one of the first organizations to embrace the aurum currency, they hope to reach out directly to the capsuleer community with high-end commodities.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

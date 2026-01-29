@@ -1,0 +1,21 @@
+{
+  "type_id": 4158,
+  "name": "Women's 'Sterling' Dress Blouse (graphite)",
+  "description": "Designer: Sennda of Emrayur\n\nModeled after the Class B military blouses found in several modern navies, the dark graphite gray \"Sterling\" dress blouse is designed to cope with the realities of daily service while maintaining the image of an orderly fighting force. Our dark wool blends are specially treated to resist staining, even tough grease and oil stains common on modern starships. The blouse is adorned with traditional epaulets and a classic waist cincher.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Tops",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 3.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}

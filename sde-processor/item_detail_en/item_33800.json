@@ -1,0 +1,21 @@
+{
+  "type_id": 33800,
+  "name": "Men's 'Curate' Coat (black/silver)",
+  "description": "This outerwear signifies the wearer's regal nature and (some claim) near-divine immortality.\nWith a tattoo of steely silver decorations on a pitch black background that brings to mind a starry sky, it befits a person who is charged with the caretaking of innumerable souls, on their crew and elsewhere - along with, occasionally, ushering them to their maker - and is an undeniable statement of purpose in this dark and dangerous world. \n\nThe wearer, it says, is not afraid to attract the attention of others, be they admiring or antagonistic; for he follows a mandate greater than that of any mortal man, and he will not, ever, under any circumstances, be stopped.",
+  "volume": 0.1,
+  "repackaged_volume": null,
+  "capacity": null,
+  "mass": 0.5,
+  "category_name": "Apparel",
+  "group_name": "Outer",
+  "attributes": [
+    {
+      "attribute_name": "gender",
+      "value": 1.0,
+      "categoryID": 7,
+      "display_name": "Gender",
+      "unit_name": "1=Male 2=Unisex 3=Female"
+    }
+  ],
+  "traits": []
+}
