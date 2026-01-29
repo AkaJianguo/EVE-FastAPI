@@ -53,6 +53,10 @@ export default defineConfig(({ mode, command }) => {
           target: backendTarget,
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
+        },
+        '/sde-static': {
+          target: backendTarget,
+          changeOrigin: true
         }
       }
     },
