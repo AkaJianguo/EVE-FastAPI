@@ -99,7 +99,7 @@ services:
       - ./ruoyi-fastapi-frontend:/app
     environment:
       - BACKEND_HOST=${BACKEND_HOST}
-      - BACKEND_PORT=9099
+      - BACKEND_PORT=${BACKEND_PORT}
     depends_on:
       - eve-backend-pg
     networks:

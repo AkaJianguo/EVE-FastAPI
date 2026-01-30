@@ -171,7 +171,8 @@ class NpcCorporationsProcessor:
         print(f"[+] 开始并发获取 {len(corporation_ids)} 个军团的faction_id信息...")
         print(f"[+] 并发数: {self.max_concurrent}")
         
-        connector = aiohttp.TCPConnector(limit=100)
+        # ESI 证书在部分环境会校验失败，禁用 SSL 校验以保证抓取不中断
+        connector = aiohttp.TCPConnector(limit=100, ssl=False)
         headers = {"User-Agent": "EveSDE_2.0/1.0"}
         
         async with aiohttp.ClientSession(

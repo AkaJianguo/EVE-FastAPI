@@ -150,4 +150,15 @@ esi.local.cfg
 esi.prod.cfg
 *.cfg
 
+# SDE generated details
+sde-processor/item_detail_zh/*.json
+sde-processor/item_detail_en/*.json
 
+
+sde-processor/output_icons/icons.zip
+sde-processor/output_sde/db/item_db_en.sqlite
+sde-processor/output_sde/db/item_db_zh.sqlite
+sde-processor/output_sde/localization/accountingentrytypes_localized.json
+sde-processor/output_sde/maps/regions_data.json
+sde-processor/output_sde/maps/systems_data.json
+sde-processor/output_sde/maps/neighbors_data.json

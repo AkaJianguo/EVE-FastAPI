@@ -23,3 +23,13 @@ output/
 brackets_decode/brackets_output.json
 /tmp
 /temp_whats_new
+# SDE generated details
+item_detail_zh/*.json
+item_detail_en/*.json
+output_icons/icons.zip
+output_sde/db/item_db_en.sqlite
+output_sde/db/item_db_zh.sqlite
+output_sde/localization/accountingentrytypes_localized.json
+output_sde/maps/regions_data.json
+output_sde/maps/systems_data.json
+output_sde/maps/neighbors_data.json

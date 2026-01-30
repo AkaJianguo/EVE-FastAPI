@@ -125,6 +125,27 @@ def insert_rows(
     columns: Sequence[str],
     rows: Sequence[tuple],
 ) -> None:
+    # 将 SQLite 的 0/1 整数转换为 PostgreSQL 的布尔类型
+    pg_cursor.execute(
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = %s AND table_name = %s AND data_type = 'boolean'
+        """,
+        (schema, table),
+    )
+    bool_cols = {row[0] for row in pg_cursor.fetchall()}
+    if bool_cols:
+        fixed_rows: list[tuple] = []
+        bool_indexes = [idx for idx, name in enumerate(columns) if name in bool_cols]
+        for row in rows:
+            row_list = list(row)
+            for idx in bool_indexes:
+                if row_list[idx] is not None:
+                    row_list[idx] = bool(row_list[idx])
+            fixed_rows.append(tuple(row_list))
+        rows = fixed_rows
+
     insert_stmt = sql.SQL("INSERT INTO {}.{} ({}) VALUES %s").format(
         sql.Identifier(schema),
         sql.Identifier(table),
